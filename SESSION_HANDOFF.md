@@ -25,10 +25,9 @@ We have completed Phase 11. The Worker node pipeline is now extremely mature: it
 **However:** The system is completely deterministic. The mocked AI Brain components still need real Gemini logic.
 
 ## 5. Exact Next Development Objective
-Your immediate objective should be negotiating **Phase 12: True AI Integration**.
-This means finally wiring up the Google Gemini API to the system.
-- Example task: Replace `DomainExpansionService` mock dictionaries with a Gemini structured JSON output prompt.
-- Example task: Implement an LLM fallback extractor for the `ExtractionEngine` when deterministic parsing returns a low confidence score.
+Your immediate objective should be negotiating an **Outstanding Hotfix**.
+The `application_url` parameter is currently being silently dropped and permanently lost during the `DatabaseMappingLayer` mapping before it hits Supabase.
+**DO NOT build Phase 12.** Fix the mapping pipeline, ensure `application_url` is added to the `InternshipRow` typescript type, and verify the `UpsertStrategy` securely overwrites it.
 
 **DO NOT** rewrite the infrastructure. **PLUG IN** to the existing `SearchProvider` interfaces and `WorkerLifecycle`.
 

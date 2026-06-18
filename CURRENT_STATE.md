@@ -26,5 +26,5 @@ The following systems currently use mocked stubs and require actual integration 
 - **TypeScript Generation:** `types.ts` was manually crafted for existing features. If the schema updates, the developer must either run the Supabase CLI generator or manually sync the interfaces.
 
 ## 5. Next Planned Phase
-**Phase 12: True AI Integration**
-The worker pipeline is feature-complete but relies entirely on deterministic heuristics and mocked AI stubs. The next phase involves integrating Google Gemini to act as a fallback extractor for low-confidence candidates, as well as replacing the mocked `DomainExpansionService` and `QueryGenerationService` in the Brain with real LLM prompts.
+**Hotfix:** `application_url` Persistence Drop
+Before moving to Phase 12 (True AI Integration), a critical architectural data loss bug must be fixed. The `application_url` exists in the in-memory payloads but is currently permanently discarded by the `DatabaseMappingLayer` during database row creation.
