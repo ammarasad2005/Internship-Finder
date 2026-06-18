@@ -21,7 +21,7 @@ Before you write *any* code or make an architectural decision, you MUST read the
 5. `CURRENT_STATE.md` (Where the project is right now)
 
 ## 4. Current Status
-We have completed Phase 10. The Worker node pipeline is now extremely mature: it executes budgeted search waves, fetches DOMs, parses them into candidates, and deduplicates them using a canonical hashing engine.
+We have completed Phase 10 and its subsequent Hardening audit. The Worker node pipeline extracts, parses, and securely deduplicates payloads using a highly resilient canonical hashing engine that automatically isolates broken or generic data via URL-hashing.
 **However:** The system is completely deterministic. The mocked AI Brain components still need real Gemini logic, and the final canonical records need to be saved to the database.
 
 ## 5. Exact Next Development Objective

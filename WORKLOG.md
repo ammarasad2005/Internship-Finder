@@ -107,3 +107,11 @@ This document maintains a chronological history of the project's development, tr
   - Built `DeduplicationEngine` and `InternshipMergeStrategy` to handle collision resolution, actively preferring Official Career Page data over third-party boards.
   - Built `SourceAggregator` to maintain an array of all discovered URLs.
 - **Decisions:** Continued the philosophy of deterministic processing over AI. Relying on strict dictionary normalization heavily protects database integrity against duplicate postings without spending Gemini tokens.
+
+## Phase 10B: Canonicalization Hardening
+- **Goal:** Resolve severe database collision risks identified during the Canonicalization Engine audit.
+- **Actions:**
+  - Updated `CanonicalKeyGenerator` to dynamically inject base-36 URL hashes into the primary key whenever a "Generic Title" (e.g., "Internship") or "Unknown Company" is detected.
+  - Reduced `InternshipNormalizer` aggressiveness, retaining essential entity modifiers like `technologies` and `software`, and strictly differentiating between `remote` and `hybrid`.
+  - Added native `requiresManualReview` flags to the `CanonicalInternship` payload.
+- **Decisions:** Accepted the architectural trade-off of "fracturing" (creating duplicate DB records for the same generic job scraped across different boards) in order to completely eliminate the fatal risk of colliding entirely distinct jobs together.

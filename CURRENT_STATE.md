@@ -1,10 +1,10 @@
 # Current State: Internship Finder
 
-**Last Updated:** Phase 10 Completion
+**Last Updated:** Phase 10 Hardening Completion
 
 ## 1. Codebase Status
 - **Current Git Branch:** `phase-10-canonicalization`
-- **Application Status:** The infrastructure layer is 100% complete. The worker pipeline now successfully executes raw queries, deterministically extracts DOM payloads, and securely canonicalizes/deduplicates those candidates into unified records ready for the database.
+- **Application Status:** The infrastructure layer is 100% complete. The worker pipeline deterministically extracts DOM payloads, securely canonicalizes candidates, and employs dynamic URL-hashing to perfectly isolate generic or broken listings from causing false-positive database collisions.
 
 ## 2. Implemented Systems
 - Next.js 15 App Router Architecture with `src/features/` module separation.
