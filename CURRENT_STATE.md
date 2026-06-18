@@ -1,10 +1,10 @@
 # Current State: Internship Finder
 
-**Last Updated:** Phase 8 Completion
+**Last Updated:** Phase 8B Completion
 
 ## 1. Codebase Status
-- **Current Git Branch:** `phase-8-provider-integration`
-- **Application Status:** The infrastructure layer is 100% complete. The Discovery layer efficiently plans and budgets search waves, and the Provider layer is now connected to the real internet via Google CSE (with robust circuit breakers and failovers).
+- **Current Git Branch:** `phase-8b-google-cse-provider`
+- **Application Status:** The infrastructure layer is 100% complete. The Discovery layer efficiently plans and budgets search waves, and the Provider layer executes real queries via Google Custom Search, logging raw payloads locally for debugging.
 
 ## 2. Implemented Systems
 - Next.js 15 App Router Architecture with `src/features/` module separation.
@@ -26,5 +26,5 @@ The following systems currently use mocked stubs and require actual integration 
 - **TypeScript Generation:** `types.ts` was manually crafted for existing features. If the schema updates, the developer must either run the Supabase CLI generator or manually sync the interfaces.
 
 ## 5. Next Planned Phase
-**Phase 9: Internship Extraction & Matching**
-The system now possesses raw Google search links. The next phase requires scraping the actual page contents (e.g., via Cheerio, Puppeteer, or Firecrawl) and utilizing the AI Brain to extract structured JSON internships and match them against the user profile.
+**Phase 9: Content Extraction and Matching**
+The system now retrieves raw Google search links representing internships. The next phase requires fetching the raw HTML of those URLs (e.g., via Cheerio/JSDOM) and utilizing a Gemini LLM prompt to parse the unstructured text into a structured database `internships` payload, and finally scoring it against the user's profile.

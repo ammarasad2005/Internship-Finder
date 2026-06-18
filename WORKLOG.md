@@ -71,3 +71,11 @@ This document maintains a chronological history of the project's development, tr
   - Built `ProviderRouter` for weighted failover routing.
   - Implemented the first real API: `GoogleCSEProvider` (Google Custom Search).
 - **Decisions:** Used Google CSE as the first provider because it perfectly matches the constraint of "Free infrastructure" (100 free queries/day renewing forever) and natively indexes local Pakistani job boards better than AI proxies like Tavily.
+
+## Phase 8B: Google CSE Provider Integration
+- **Goal:** Execute real internet queries using Google Programmable Search Engine.
+- **Actions:**
+  - Implemented the `GoogleCSEProvider` to map the `SearchProvider` interface to the physical Google REST API.
+  - Implemented `SearchResult` normalization to flatten Google JSON payloads.
+  - Built a local debug storage utility to drop raw search payloads into `.debug/search_responses/`.
+- **Decisions:** Used native `fetch` with strict HTTP 429 Quota Exceeded trapping to perfectly synchronize with the `WorkerLifecycle` exponential backoff and circuit breaker algorithms.

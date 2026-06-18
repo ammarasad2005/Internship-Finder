@@ -21,7 +21,7 @@ Before you write *any* code or make an architectural decision, you MUST read the
 5. `CURRENT_STATE.md` (Where the project is right now)
 
 ## 4. Current Status
-We have completed Phase 8. The Worker node executes optimized search waves dynamically routed to real APIs (Google CSE) via a Provider Registry equipped with circuit breakers.
+We have completed Phase 8B. The Worker node executes optimized search waves dynamically routed to real APIs (Google CSE) and successfully returns normalized URLs.
 **However:** The AI Brain components (`DomainExpansionService`, `QueryGenerationService`) are currently using deterministic string-matching instead of true Gemini prompts.
 
 ## 5. Exact Next Development Objective
