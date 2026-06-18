@@ -132,3 +132,16 @@ This document maintains a chronological history of the project's development, tr
   - Updated `InternshipRow` TypeScript interface.
   - Updated `DatabaseMappingLayer` to dynamically extract and persist the URL.
 - **Decisions:** Allowed `application_url` to remain natively nullable in the PostgreSQL database because many scraped job listings do not supply an exact application link.
+
+## Phase 12: AI Research Brain Integration
+- **Goal:** Replace deterministic mock intelligence components (`DomainExpansionService`, `QueryGenerationService`) with true LLM reasoning via Google Gemini.
+- **Actions:**
+  - Installed `@google/genai` and created the `GeminiService` wrapper for structured JSON outputs.
+  - Implemented `gemini.schema.ts` defining strict Zod validation schemas for all LLM payloads.
+  - Built `AiCacheService` to hook into the existing Supabase `ai_cache` table.
+  - Updated Domain and Query services to execute caching, execute Gemini prompts, validate output, and fall back to deterministic mocks on failure.
+- **Decisions:** 
+  - Required strict `application/json` output and forced `Zod` validation.
+  - Hashed stringified, sorted arrays (`[...arr].sort()`) using `crypto.createHash('sha256')` to prevent cache collisions and guarantee deduplicated profile cache hits.
+  - Built the `GeminiService` with an exponential backoff loop to survive 429s and timeouts.
+  - If the API key is missing or validation critically fails, the code throws gracefully and the services instantaneously fall back to hardcoded dictionaries (the "Deterministic First" philosophy).
