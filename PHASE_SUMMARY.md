@@ -22,7 +22,7 @@ This document is the ultimate continuity guide designed to perfectly restore pro
 - **Data Flow:** UI `StartSession` -> `SearchWavePlanner` -> `ProviderRouter` -> `GoogleCSEProvider` -> Normalized `SearchResult[]`.
 
 ## 3. Current Branch
-`phase-11-persistence-pipeline`
+`hotfix-persistence-application-url`
 
 ## 4. Most Recent Commits
 ```text
@@ -48,8 +48,8 @@ feat: implement canonicalization and deduplication engine
 - **Phase 14:** Polish and UI completion.
 
 ## 7. Immediate Next Phase
-**Hotfix:** Persist `application_url` through the entire persistence pipeline. 
-(Currently, `application_url` is silently dropped during DB mapping. It must be recovered and written to Supabase before proceeding to Phase 12).
+**Phase 12: True AI Integration.** 
+Wiring up the Google Gemini API to the `DomainExpansionService` and `QueryGenerationService`, and deploying it as a fallback extractor for the `ExtractionEngine`.
 
 ## 8. Known Technical Debt
 - Mock services still active (`DomainExpansionService`, `QueryGenerationService`).

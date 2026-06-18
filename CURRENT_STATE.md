@@ -1,10 +1,10 @@
 # Current State: Internship Finder
 
-**Last Updated:** Phase 11 Completion
+**Last Updated:** Hotfix Application URL Completion
 
 ## 1. Codebase Status
-- **Current Git Branch:** `phase-11-persistence-pipeline`
-- **Application Status:** The infrastructure layer is 100% complete. The worker pipeline now successfully executes raw queries, deterministically extracts DOM payloads, securely canonicalizes candidates, and successfully persists unified records to the Supabase database.
+- **Current Git Branch:** `hotfix-persistence-application-url`
+- **Application Status:** The infrastructure layer is 100% complete. The worker pipeline now successfully executes raw queries, deterministically extracts DOM payloads, securely canonicalizes candidates, and successfully persists unified records (securely including `application_url`s) to the Supabase database.
 
 ## 2. Implemented Systems
 - Next.js 15 App Router Architecture with `src/features/` module separation.
@@ -26,5 +26,5 @@ The following systems currently use mocked stubs and require actual integration 
 - **TypeScript Generation:** `types.ts` was manually crafted for existing features. If the schema updates, the developer must either run the Supabase CLI generator or manually sync the interfaces.
 
 ## 5. Next Planned Phase
-**Hotfix:** `application_url` Persistence Drop
-Before moving to Phase 12 (True AI Integration), a critical architectural data loss bug must be fixed. The `application_url` exists in the in-memory payloads but is currently permanently discarded by the `DatabaseMappingLayer` during database row creation.
+**Phase 12: True AI Integration**
+The worker pipeline is feature-complete but relies entirely on deterministic heuristics and mocked AI stubs. The next phase involves integrating Google Gemini to act as a fallback extractor for low-confidence candidates, as well as replacing the mocked `DomainExpansionService` and `QueryGenerationService` in the Brain with real LLM prompts.

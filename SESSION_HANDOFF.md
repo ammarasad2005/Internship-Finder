@@ -21,13 +21,14 @@ Before you write *any* code or make an architectural decision, you MUST read the
 5. `CURRENT_STATE.md` (Where the project is right now)
 
 ## 4. Current Status
-We have completed Phase 11. The Worker node pipeline is now extremely mature: it executes budgeted search waves, fetches DOMs, parses them into candidates, deduplicates them using a canonical hashing engine, and natively persists the records to Supabase.
+We have completed Phase 11 and successfully deployed the `application_url` hotfix. The Worker node pipeline is now extremely mature: it executes budgeted search waves, fetches DOMs, parses them into candidates, deduplicates them using a canonical hashing engine, and natively persists the full records (including `application_url`) to Supabase.
 **However:** The system is completely deterministic. The mocked AI Brain components still need real Gemini logic.
 
 ## 5. Exact Next Development Objective
-Your immediate objective should be negotiating an **Outstanding Hotfix**.
-The `application_url` parameter is currently being silently dropped and permanently lost during the `DatabaseMappingLayer` mapping before it hits Supabase.
-**DO NOT build Phase 12.** Fix the mapping pipeline, ensure `application_url` is added to the `InternshipRow` typescript type, and verify the `UpsertStrategy` securely overwrites it.
+Your immediate objective should be negotiating **Phase 12: True AI Integration**.
+This means finally wiring up the Google Gemini API to the system.
+- Example task: Replace `DomainExpansionService` mock dictionaries with a Gemini structured JSON output prompt.
+- Example task: Implement an LLM fallback extractor for the `ExtractionEngine` when deterministic parsing returns a low confidence score.
 
 **DO NOT** rewrite the infrastructure. **PLUG IN** to the existing `SearchProvider` interfaces and `WorkerLifecycle`.
 

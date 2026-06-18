@@ -124,3 +124,11 @@ This document maintains a chronological history of the project's development, tr
   - Implemented `UpsertStrategy` utilizing Supabase's native `ON CONFLICT` resolution to handle canonical collisions.
   - Built `InternshipPersistenceService` as the orchestrator to process batches and compile `PersistenceMetrics`.
 - **Decisions:** Strictly utilized native PostgreSQL upsert mechanisms to resolve collisions instead of executing an inefficient "check if exists -> insert or update" sequential pattern, reducing database round-trips by 50%.
+
+## Hotfix: Application URL Persistence
+- **Goal:** Resolve critical data loss bug where `application_url` was permanently dropped during the database mapping phase.
+- **Actions:**
+  - Updated `database-design.md` and `initial_schema.sql` to natively include an `application_url TEXT` column on the `internships` table.
+  - Updated `InternshipRow` TypeScript interface.
+  - Updated `DatabaseMappingLayer` to dynamically extract and persist the URL.
+- **Decisions:** Allowed `application_url` to remain natively nullable in the PostgreSQL database because many scraped job listings do not supply an exact application link.
