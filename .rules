@@ -1,0 +1,30 @@
+# Internship Finder Project Rules
+
+## Product Definition
+- Internship Finder is a domain-specific deep research agent, not a generic job board.
+
+## Tech Stack & Execution
+- UI & Session: Next.js (App Router) on Vercel.
+- CSS: Vanilla CSS / CSS Modules (Strictly NO TailwindCSS, Mobile-First enforced).
+- Database: Supabase (Auth, Postgres DB, Storage).
+- Background Execution: GitHub Actions (or similar asynchronous worker) for all recursive research.
+- AI: Google Gemini.
+
+## Architectural Constraints
+- Asynchronous Research: Web scraping, domain expansion, and iterative research MUST NOT run synchronously within Vercel HTTP requests.
+- Pluggable Providers: The search architecture must support multiple swappable search/extraction providers.
+- Feature-Based Structure: Organize code by domain under `src/features/`.
+
+## AI & Resource Rules
+- Deterministic First: Always use standard code (SQL, normalization, regex) before invoking an LLM.
+- AI Limits: Use AI ONLY for profile analysis, adaptive enrichment, domain expansion, semantic matching, and explanation generation.
+- Batching & Caching: Batch AI calls and cache reusable semantic outputs to protect API limits.
+
+## Data Quality & Deduplication
+- Canonical Identifiers: Deduplicate internships deterministically using `company + role + location`.
+- Provenance: Retain all discovered source URLs for an internship. Always prefer official company career pages.
+- Validation: Validate listing status deterministically before relying on AI.
+
+## Onboarding
+- Multi-path: Always offer multiple ways to onboard (Resume, LinkedIn URL, Quick Start).
+- Confidence Score: Research cannot begin until the user's Profile Confidence Score reaches the required threshold, achieved via conversational AI enrichment if necessary.

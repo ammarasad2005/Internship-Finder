@@ -1,0 +1,73 @@
+.appShell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--primary);
+  letter-spacing: -0.025em;
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.navLink {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.navLink:hover {
+  color: var(--foreground);
+}
+
+.navButton {
+  font-size: 0.875rem;
+  font-weight: 500;
+  background-color: var(--primary);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  transition: background-color 0.2s;
+}
+
+.navButton:hover {
+  background-color: var(--primary-hover);
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 480px; /* Mobile-first constraint */
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+/* Tablet and larger overrides */
+@media (min-width: 768px) {
+  .mainContent {
+    max-width: 768px;
+    padding: 2rem;
+  }
+}
