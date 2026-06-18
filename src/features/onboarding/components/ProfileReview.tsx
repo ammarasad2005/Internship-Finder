@@ -1,6 +1,9 @@
 import styles from './onboarding.module.css';
 import { OnboardingState } from '../types';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { ProfileService } from '../services/profile.service';
+import { createClient } from '@/lib/supabase/client';
 
 interface Props {
   state: OnboardingState;
@@ -8,10 +11,47 @@ interface Props {
 
 export function ProfileReview({ state }: Props) {
   const router = useRouter();
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleFinish = () => {
-    // Navigate to dashboard
-    router.push('/dashboard');
+  const handleFinish = async () => {
+    setIsSaving(true);
+    setError(null);
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) throw new Error("Not authenticated");
+
+      const profileData = {
+        first_name: state.profile.first_name,
+        last_name: state.profile.last_name,
+        location_preference: state.profile.location_preference,
+        remote_preference: state.profile.remote_preference,
+        duration_preference: state.profile.duration_preference,
+        paid_preference: state.profile.paid_preference,
+        confidence_score: state.profile.confidence_score,
+      };
+
+      const skillsData = state.skills.map(s => ({
+        skill_name: s.skill_name,
+        source: s.source
+      }));
+
+      const projectsData = state.projects.map(p => ({
+        project_name: p.project_name,
+        description: p.description,
+        technologies: p.technologies,
+        source: p.source
+      }));
+
+      await ProfileService.saveOnboardingProfile(user.id, profileData, skillsData, projectsData);
+      
+      router.push('/dashboard');
+    } catch (err: any) {
+      setError(err.message);
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -37,8 +77,10 @@ export function ProfileReview({ state }: Props) {
         <div className={styles.confidenceText}>{state.profile.confidence_score || 0}%</div>
       </div>
 
-      <button className={styles.primaryButton} onClick={handleFinish}>
-        Go to Dashboard
+      {error && <div className={styles.error} style={{marginBottom: '1rem'}}>{error}</div>}
+
+      <button className={styles.primaryButton} onClick={handleFinish} disabled={isSaving}>
+        {isSaving ? 'Saving Profile...' : 'Go to Dashboard'}
       </button>
     </div>
   );

@@ -13,12 +13,12 @@ The system is designed around separating user preferences (UI domain) from the g
   - `first_name` (text)
   - `last_name` (text)
   - `location_preference` (text)
-  - `remote_preference` (text)
+  - `remote_preference` (enum: 'remote', 'hybrid', 'onsite', 'no_preference')
   - `duration_preference` (text)
   - `paid_preference` (boolean)
-  - `confidence_score` (integer, 0-100) - Determines if research can begin.
+  - `confidence_score` (integer, 0-100) - Checked via DB constraint. Determines if research can begin.
   - `created_at` (timestamp)
-  - `updated_at` (timestamp)
+  - `updated_at` (timestamp, updated via trigger)
 - **Foreign Keys:** `id` references `auth.users(id)`
 - **Indexes:** `id`
 - **Relationships:** 1:1 with `auth.users`, 1:N with `profile_skills`, 1:N with `profile_projects`, 1:N with `search_sessions`.
@@ -55,10 +55,11 @@ The system is designed around separating user preferences (UI domain) from the g
 - **Columns:**
   - `id` (uuid, primary key)
   - `profile_id` (uuid)
-  - `status` (text) - 'pending', 'in_progress', 'completed', 'failed'
+  - `status` (enum: 'pending', 'in_progress', 'completed', 'failed')
   - `started_at` (timestamp, nullable)
   - `completed_at` (timestamp, nullable)
   - `created_at` (timestamp)
+- **Constraints:** CHECK (`completed_at >= started_at` OR `completed_at IS NULL`)
 - **Foreign Keys:** `profile_id` references `profiles(id)`
 - **Indexes:** `profile_id`, `status`
 - **Relationships:** 1:N with `research_runs`, 1:N with `research_session_events`, 1:N with `matches`.
@@ -83,8 +84,8 @@ The system is designed around separating user preferences (UI domain) from the g
   - `session_id` (uuid)
   - `query_used` (text)
   - `search_provider` (text) - e.g., 'google_cse', 'linkedin', 'rozee_html'
-  - `depth_level` (integer) - Tracks recursion depth.
-  - `results_found` (integer)
+  - `depth_level` (integer) - Tracks recursion depth (CHECK >= 0).
+  - `results_found` (integer) - (CHECK >= 0).
   - `created_at` (timestamp)
 - **Foreign Keys:** `session_id` references `search_sessions(id)`
 - **Indexes:** `session_id`
@@ -102,7 +103,7 @@ The system is designed around separating user preferences (UI domain) from the g
   - `tags` (text[]) - Array of categorical tags (e.g., 'frontend', 'marketing') to enable fast SQL filtering before AI semantic matching.
   - `is_active` (boolean) - Validated via deadline or URL HTTP status.
   - `discovered_at` (timestamp)
-  - `updated_at` (timestamp)
+  - `updated_at` (timestamp, updated via trigger)
 - **Foreign Keys:** None.
 - **Indexes:** `canonical_key` (UNIQUE), `is_active`, GIN index on `tags`
 - **Relationships:** 1:N with `internship_sources`, 1:N with `matches`.
@@ -113,9 +114,10 @@ The system is designed around separating user preferences (UI domain) from the g
   - `id` (uuid, primary key)
   - `internship_id` (uuid)
   - `source_url` (text)
-  - `source_type` (text) - e.g., 'official_career_page', 'job_board'
+  - `source_type` (enum: 'official_career_page', 'job_board', 'linkedin', 'other')
   - `is_primary` (boolean) - True for official pages.
   - `first_seen_at` (timestamp)
+- **Constraints:** UNIQUE (`internship_id`, `source_url`)
 - **Foreign Keys:** `internship_id` references `internships(id)`
 - **Indexes:** `internship_id`
 - **Relationships:** N:1 with `internships`.
@@ -129,8 +131,9 @@ The system is designed around separating user preferences (UI domain) from the g
   - `session_id` (uuid)
   - `semantic_score` (integer) - AI generated relevance score (0-100).
   - `explanation` (text) - AI generated "Why this fits you" text.
-  - `user_feedback` (text, nullable) - 'applied', 'rejected', 'saved'.
+  - `user_feedback` (enum: 'applied', 'rejected', 'saved')
   - `created_at` (timestamp)
+- **Constraints:** UNIQUE (`profile_id`, `internship_id`, `session_id`), CHECK (`semantic_score` between 0 and 100)
 - **Foreign Keys:** `profile_id` references `profiles(id)`, `internship_id` references `internships(id)`, `session_id` references `search_sessions(id)`
 - **Indexes:** `profile_id`, `internship_id`, `session_id`
 - **Relationships:** N:1 with `profiles`, N:1 with `internships`.
@@ -140,7 +143,7 @@ The system is designed around separating user preferences (UI domain) from the g
 - **Columns:**
   - `id` (uuid, primary key)
   - `cache_key` (text, unique) - Hash of the prompt or input parameters.
-  - `cache_type` (text) - e.g., 'domain_expansion', 'resume_parse'
+  - `cache_type` (enum: 'domain_expansion', 'resume_parse', 'skill_extraction', 'other')
   - `output_value` (jsonb)
   - `expires_at` (timestamp, nullable)
   - `created_at` (timestamp)
@@ -153,7 +156,7 @@ The system is designed around separating user preferences (UI domain) from the g
   - `id` (uuid, primary key)
   - `profile_id` (uuid, nullable) - Nullable for tracking guest searches via IP or fingerprint if needed.
   - `session_id` (uuid)
-  - `tokens_used` (integer, nullable) - Track cost per run.
+  - `tokens_used` (integer, nullable) - Track cost per run (CHECK >= 0).
   - `created_at` (timestamp)
 - **Foreign Keys:** `profile_id` references `profiles(id)`, `session_id` references `search_sessions(id)`
 - **Indexes:** `profile_id`, `created_at`
