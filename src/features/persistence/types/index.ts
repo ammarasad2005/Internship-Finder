@@ -4,6 +4,7 @@ export interface InternshipRow {
   role_title: string;
   location: string;
   description: string;
+  application_url: string | null;
   tags: string[];
   is_active: boolean;
   // Let Supabase handle discovered_at and updated_at

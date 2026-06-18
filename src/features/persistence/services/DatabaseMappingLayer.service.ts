@@ -12,6 +12,7 @@ export class DatabaseMappingLayer {
       role_title: canonical.title,
       location: canonical.location,
       description: canonical.description,
+      application_url: canonical.applicationUrl,
       // Provide basic deterministic tags to save AI processing later
       tags: this.generateDeterministicTags(canonical),
       is_active: true // Always true on first discovery or subsequent updates

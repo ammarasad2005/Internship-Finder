@@ -97,6 +97,7 @@ CREATE TABLE public.internships (
     role_title TEXT NOT NULL,
     location TEXT,
     description TEXT,
+    application_url TEXT,
     tags TEXT[],
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     discovered_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

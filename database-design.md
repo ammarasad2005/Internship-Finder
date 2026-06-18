@@ -100,6 +100,7 @@ The system is designed around separating user preferences (UI domain) from the g
   - `role_title` (text)
   - `location` (text)
   - `description` (text)
+  - `application_url` (text, nullable)
   - `tags` (text[]) - Array of categorical tags (e.g., 'frontend', 'marketing') to enable fast SQL filtering before AI semantic matching.
   - `is_active` (boolean) - Validated via deadline or URL HTTP status.
   - `discovered_at` (timestamp)
