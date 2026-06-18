@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { SessionService } from '../services/session.service';
+import { MockWorker } from '@/features/worker/MockWorker';
 
 export function StartSessionButton({ profileId }: { profileId: string }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -13,7 +14,7 @@ export function StartSessionButton({ profileId }: { profileId: string }) {
     try {
       const session = await SessionService.createSession(profileId);
       // Simulate the worker picking it up immediately in the background
-      SessionService.simulateWorkerExecution(session.id);
+      MockWorker.start(session.id, profileId);
       // Redirect to the detail page
       router.push(`/dashboard/sessions/${session.id}`);
     } catch (err) {
