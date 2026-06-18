@@ -31,8 +31,8 @@ export class InternshipNormalizer {
   static normalizeCompany(company: string): string {
     let c = this.clean(company);
     
-    // Remove legal entities and generic suffixes
-    const suffixes = ['inc', 'llc', 'ltd', 'limited', 'corp', 'corporation', 'technologies', 'tech', 'software'];
+    // Remove ONLY specific legal entities
+    const suffixes = ['ltd', 'llc', 'corp', 'inc', 'pvt', 'private limited', 'corporation', 'limited'];
     suffixes.forEach(suffix => {
       c = c.replace(new RegExp(`\\b${suffix}\\b`, 'gi'), '');
     });
@@ -43,6 +43,9 @@ export class InternshipNormalizer {
   static normalizeLocation(location: string): string {
     let l = this.clean(location);
     
+    // Exact match for the Phase 9 fallback string after clean()
+    if (l === 'remote unspecified' || l === 'unspecified' || l === '') return 'unspecified';
+    if (l.includes('hybrid')) return 'hybrid';
     if (l.includes('remote')) return 'remote';
     
     // Pakistani specific normalization

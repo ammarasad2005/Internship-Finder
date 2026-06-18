@@ -11,4 +11,6 @@ export interface CanonicalInternship {
   sourceUrls: string[];
   confidenceScore: number;
   extractedCandidates: InternshipCandidate[];
+  requiresManualReview: boolean;
+  collisionRiskReason?: string;
 }

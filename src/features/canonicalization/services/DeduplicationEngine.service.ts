@@ -11,7 +11,12 @@ export class DeduplicationEngine {
    * Processes a new candidate, merging it if it exists or creating a new record.
    */
   process(candidate: InternshipCandidate): CanonicalInternship {
-    const key = CanonicalKeyGenerator.generate(candidate.company, candidate.title, candidate.location);
+    const { key, requiresReview, reason } = CanonicalKeyGenerator.generate(
+      candidate.company, 
+      candidate.title, 
+      candidate.location,
+      candidate.sourceUrl
+    );
 
     if (this.memoryStore.has(key)) {
       // Merge
@@ -44,7 +49,9 @@ export class DeduplicationEngine {
       sourceCount: 1,
       sourceUrls: [candidate.sourceUrl.split('?')[0]],
       confidenceScore: candidate.confidenceScore,
-      extractedCandidates: [candidate]
+      extractedCandidates: [candidate],
+      requiresManualReview: requiresReview,
+      collisionRiskReason: reason
     };
 
     this.memoryStore.set(key, newCanonical);
