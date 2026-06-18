@@ -2,7 +2,7 @@ import { SearchQuery } from '@/features/brain/types';
 import { SearchWave, BudgetConfig, ExecutableTask } from '../types';
 import { QueryDeduplicationEngine } from './query-deduplication.engine';
 import { SearchCoverageAnalyzer } from './search-coverage.analyzer';
-import { ProviderSelectionEngine } from './provider-selection.engine';
+import { ProviderRouter } from './provider-router.service';
 import { SearchCostEstimator } from './search-cost.estimator';
 import { QueryBudgetManager } from './query-budget.manager';
 
@@ -26,10 +26,13 @@ export class SearchWavePlanner {
     const diverseQueries = SearchCoverageAnalyzer.optimizeCoverage(uniqueQueries, budget.maxQueriesPerWave * 2);
 
     // 3. Provider Selection & Cost Estimation
-    const potentialTasks: ExecutableTask[] = diverseQueries.map(query => {
-      const provider = ProviderSelectionEngine.selectProvider(query);
-      const cost = SearchCostEstimator.estimateCost(provider.costPerQuery, 1);
-      return { query, providerId: provider.id, estimatedCost: cost };
+    const potentialTasks: ExecutableTask[] = [];
+    diverseQueries.forEach(query => {
+      const provider = ProviderRouter.selectProvider(query);
+      if (provider) {
+        const cost = SearchCostEstimator.estimateCost(provider.costPerQuery, 1);
+        potentialTasks.push({ query, providerId: provider.id, estimatedCost: cost });
+      }
     });
 
     // 4. Budget Constraint Application
