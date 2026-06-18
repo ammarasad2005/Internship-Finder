@@ -1,12 +1,54 @@
 import { ExpandedDomain } from '../types';
+import { SupabaseClient } from '@supabase/supabase-js';
+import { GeminiService } from './gemini.service';
+import { AiCacheService } from './ai-cache.service';
+import { DomainExpansionResponseSchema } from '../schemas/gemini.schema';
 
 export class DomainExpansionService {
   /**
-   * Deterministic mock implementation of AI domain expansion.
-   * FUTURE AI INTEGRATION: Replace this dictionary with a Gemini prompt that takes the user's
-   * skills and outputs a structured JSON mapping of related fields.
+   * Expands user skills/projects into broader canonical domains.
+   * Uses AI Cache, Gemini reasoning, and a deterministic fallback.
    */
-  static async expandProfile(skills: string[], projects: string[]): Promise<ExpandedDomain[]> {
+  static async expandProfile(
+    skills: string[], 
+    projects: string[], 
+    supabase: SupabaseClient
+  ): Promise<ExpandedDomain[]> {
+    const aiCache = new AiCacheService(supabase);
+    const gemini = GeminiService.getInstance();
+    
+    // Ensure logical equivalence generates identical cache keys
+    const sortedSkills = [...skills].sort();
+    const sortedProjects = [...projects].sort();
+    
+    const payloadString = JSON.stringify({ skills: sortedSkills, projects: sortedProjects });
+    const cacheKey = AiCacheService.generateHash(`domain_expansion_${payloadString}`);
+    
+    // 1. Check AI Cache
+    const cached = await aiCache.get<ExpandedDomain[]>(cacheKey, 'domain_expansion');
+    if (cached) return cached;
+
+    // 2. Execute Gemini
+    try {
+      const response = await gemini.executeStructuredPrompt(
+        `You are a career counseling AI for software and tech internships.
+         Map the user's specific skills and projects into broader career domains.
+         Output valid JSON strictly matching the requested schema.`,
+        `Skills: ${skills.join(', ')}\nProjects: ${projects.join(', ')}`,
+        DomainExpansionResponseSchema
+      );
+
+      // Save to cache
+      await aiCache.set(cacheKey, 'domain_expansion', response.expansions);
+      return response.expansions;
+
+    } catch (error) {
+      console.warn('[DomainExpansionService] Gemini failed, using deterministic fallback', error);
+      return this.fallbackDeterministic(skills, projects);
+    }
+  }
+
+  private static fallbackDeterministic(skills: string[], projects: string[]): ExpandedDomain[] {
     const expansions: ExpandedDomain[] = [];
     const allInputs = [...skills, ...projects].map(s => s.toLowerCase());
 
@@ -28,7 +70,6 @@ export class DomainExpansionService {
       });
     }
 
-    // Default fallback if no specific keywords hit
     if (expansions.length === 0) {
       expansions.push({
         originalTerm: 'Software Engineering',
