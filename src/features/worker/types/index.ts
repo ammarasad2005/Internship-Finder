@@ -3,6 +3,8 @@ export interface SearchResult {
   url: string;
   snippet: string;
   sourceType: 'official_career_page' | 'job_board' | 'linkedin' | 'other';
+  source: string;
+  query: string;
   extractedDate?: string;
 }
 

@@ -100,3 +100,14 @@ ProviderRegistry.register({
   quota: { dailyLimit: 50, usedToday: 0, resetsAt: new Date(new Date().setHours(24,0,0,0)).toISOString() },
   health: { status: 'healthy', consecutiveFailures: 0 }
 });
+
+ProviderRegistry.register({
+  id: 'google_cse',
+  name: 'Google Custom Search (Real API)',
+  enabled: process.env.GOOGLE_CSE_API_KEY ? true : false,
+  weight: 100,
+  costPerQuery: 1, 
+  capabilities: ['company_based', 'location_based', 'skill_based', 'role_based'],
+  quota: { dailyLimit: 100, usedToday: 0, resetsAt: new Date(new Date().setHours(24,0,0,0)).toISOString() },
+  health: { status: 'healthy', consecutiveFailures: 0 }
+});

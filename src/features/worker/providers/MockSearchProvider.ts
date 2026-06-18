@@ -18,13 +18,17 @@ export class MockSearchProvider implements SearchProvider {
         title: `Software Engineer Intern - ${query.split(' ')[0]}`,
         url: `https://example.com/jobs/${Math.random().toString(36).substring(7)}`,
         snippet: `Join our team as an intern and work on cutting-edge technologies.`,
-        sourceType: 'official_career_page'
+        sourceType: 'official_career_page',
+        source: 'example.com',
+        query: query
       },
       {
         title: `Remote Internship 2026 - ${query.split(' ')[0]}`,
         url: `https://linkedin.com/jobs/view/${Math.random().toString(36).substring(7)}`,
         snippet: `Exciting remote internship opportunity.`,
-        sourceType: 'linkedin'
+        sourceType: 'linkedin',
+        source: 'linkedin.com',
+        query: query
       }
     ];
   }
