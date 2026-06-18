@@ -2,7 +2,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Define ENUMs
-CREATE TYPE public.search_session_status AS ENUM ('pending', 'in_progress', 'completed', 'failed');
+CREATE TYPE public.search_session_status AS ENUM ('pending', 'running', 'completed', 'failed', 'cancelled');
 CREATE TYPE public.remote_preference_type AS ENUM ('remote', 'hybrid', 'onsite', 'no_preference');
 CREATE TYPE public.source_type_enum AS ENUM ('official_career_page', 'job_board', 'linkedin', 'other');
 CREATE TYPE public.cache_type_enum AS ENUM ('domain_expansion', 'resume_parse', 'skill_extraction', 'other');

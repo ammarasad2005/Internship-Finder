@@ -9,7 +9,7 @@ export type Json =
 export interface Database {
   public: {
     Enums: {
-      search_session_status: 'pending' | 'in_progress' | 'completed' | 'failed'
+      search_session_status: 'pending' | 'running' | 'completed' | 'failed' | 'cancelled'
       remote_preference_type: 'remote' | 'hybrid' | 'onsite' | 'no_preference'
       source_type_enum: 'official_career_page' | 'job_board' | 'linkedin' | 'other'
       cache_type_enum: 'domain_expansion' | 'resume_parse' | 'skill_extraction' | 'other'
