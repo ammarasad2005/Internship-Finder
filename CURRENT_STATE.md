@@ -1,10 +1,10 @@
 # Current State: Internship Finder
 
-**Last Updated:** Phase 6 Completion
+**Last Updated:** Phase 8 Completion
 
 ## 1. Codebase Status
-- **Current Git Branch:** `phase-6-worker-foundation`
-- **Application Status:** The infrastructure layer is 100% complete. The system can register users, build profiles, orchestrate asynchronous sessions, generate complex research plans (via deterministic mocks), execute them (via mocked search APIs), and stream the timeline of events live back to the Next.js UI via WebSockets.
+- **Current Git Branch:** `phase-8-provider-integration`
+- **Application Status:** The infrastructure layer is 100% complete. The Discovery layer efficiently plans and budgets search waves, and the Provider layer is now connected to the real internet via Google CSE (with robust circuit breakers and failovers).
 
 ## 2. Implemented Systems
 - Next.js 15 App Router Architecture with `src/features/` module separation.
@@ -18,7 +18,6 @@
 The following systems currently use mocked stubs and require actual integration in future phases:
 - **`DomainExpansionService`**: Currently uses dictionary strings. Needs to integrate Gemini structured JSON output.
 - **`QueryGenerationService` & `QueryRankingService`**: Needs LLM capabilities or Embedding similarity scoring.
-- **`SearchProvider`**: Currently uses `MockSearchProvider`. Needs `GoogleCustomSearchProvider`, `LinkedInScraperProvider`, etc.
 - **GitHub Actions Runner**: `MockWorker` is currently invoked synchronously via the UI for testing. This needs to be decoupled into a CRON or webhook.
 
 ## 4. Known Technical Debt & Risks
@@ -27,5 +26,5 @@ The following systems currently use mocked stubs and require actual integration 
 - **TypeScript Generation:** `types.ts` was manually crafted for existing features. If the schema updates, the developer must either run the Supabase CLI generator or manually sync the interfaces.
 
 ## 5. Next Planned Phase
-**Phase 7: Real Search Provider Integrations OR AI Provider Integrations**
-Development should pivot towards swapping out the deterministic mocks (e.g., `MockSearchProvider` -> `TavilySearchProvider`) or connecting Google Gemini to the Research Brain.
+**Phase 9: Internship Extraction & Matching**
+The system now possesses raw Google search links. The next phase requires scraping the actual page contents (e.g., via Cheerio, Puppeteer, or Firecrawl) and utilizing the AI Brain to extract structured JSON internships and match them against the user profile.

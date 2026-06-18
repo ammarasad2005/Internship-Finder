@@ -55,3 +55,19 @@ This document maintains a chronological history of the project's development, tr
   - Implemented exponential backoff retry logic.
   - Created `CostTracker` to flush operational logs.
 - **Decisions:** Real searching deferred. `MockSearchProvider` injected to test network failure scenarios (10% random timeout).
+
+## Phase 7: Search Discovery Strategy
+- **Goal:** Build the planning and optimization layer for internship discovery.
+- **Actions:**
+  - Designed `SearchWavePlanner` to orchestrate budget and deduplication.
+  - Built `QueryBudgetManager`, `SearchCostEstimator`, and `QueryDeduplicationEngine`.
+  - Implemented `SearchCoverageAnalyzer` to round-robin select diverse search intents.
+- **Decisions:** AI queries must be aggressively filtered. Executing all queries at once wastes API quotas; instead, queries are chunked into cost-aware waves.
+
+## Phase 8: Provider Integration
+- **Goal:** Connect real search APIs via a resilient registry architecture.
+- **Actions:**
+  - Built `ProviderRegistry` for quota tracking and circuit-breaking.
+  - Built `ProviderRouter` for weighted failover routing.
+  - Implemented the first real API: `GoogleCSEProvider` (Google Custom Search).
+- **Decisions:** Used Google CSE as the first provider because it perfectly matches the constraint of "Free infrastructure" (100 free queries/day renewing forever) and natively indexes local Pakistani job boards better than AI proxies like Tavily.

@@ -21,14 +21,14 @@ Before you write *any* code or make an architectural decision, you MUST read the
 5. `CURRENT_STATE.md` (Where the project is right now)
 
 ## 4. Current Status
-We have completed Phase 6. The foundational infrastructure is perfect. The database exists, the UI tracks sessions via WebSockets, the Research Brain has been engineered to produce structured Research Plans, and the Worker node has a resilient retry execution loop.
-**However:** The worker and brain are currently using `MockSearchProvider` and deterministic string-matching.
+We have completed Phase 8. The Worker node executes optimized search waves dynamically routed to real APIs (Google CSE) via a Provider Registry equipped with circuit breakers.
+**However:** The AI Brain components (`DomainExpansionService`, `QueryGenerationService`) are currently using deterministic string-matching instead of true Gemini prompts.
 
 ## 5. Exact Next Development Objective
-Your immediate objective should be negotiated with the USER, but it will likely involve initiating **Phase 7**. 
-This means taking the stubs created in Phase 5 and Phase 6 and integrating real APIs.
-- Example task: Implement `GoogleCSEProvider implements SearchProvider`.
-- Example task: Implement `GeminiDomainExpansion` to replace `DomainExpansionService` mock logic.
+Your immediate objective should be negotiating **Phase 9: Content Extraction and Matching**. 
+This means taking the raw URLs returned by the Google CSE Provider, fetching their HTML content, and using an LLM to parse them into structured JSON internships.
+- Example task: Implement a generic web scraper (Cheerio/JSDOM).
+- Example task: Implement Gemini prompt logic to extract the internship payload and write it to the `internships` table.
 
 **DO NOT** rewrite the infrastructure. **PLUG IN** to the existing `SearchProvider` interfaces and `WorkerLifecycle`.
 
