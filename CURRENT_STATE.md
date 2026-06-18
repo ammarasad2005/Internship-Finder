@@ -1,10 +1,10 @@
 # Current State: Internship Finder
 
-**Last Updated:** Phase 9 Completion
+**Last Updated:** Phase 10 Completion
 
 ## 1. Codebase Status
-- **Current Git Branch:** `phase-9-extraction`
-- **Application Status:** The infrastructure layer is 100% complete. The Discovery layer efficiently plans and budgets search waves, the Provider layer executes real queries, and the Extraction layer deterministically fetches and parses live DOMs into validated `InternshipCandidate` objects.
+- **Current Git Branch:** `phase-10-canonicalization`
+- **Application Status:** The infrastructure layer is 100% complete. The worker pipeline now successfully executes raw queries, deterministically extracts DOM payloads, and securely canonicalizes/deduplicates those candidates into unified records ready for the database.
 
 ## 2. Implemented Systems
 - Next.js 15 App Router Architecture with `src/features/` module separation.
@@ -26,5 +26,5 @@ The following systems currently use mocked stubs and require actual integration 
 - **TypeScript Generation:** `types.ts` was manually crafted for existing features. If the schema updates, the developer must either run the Supabase CLI generator or manually sync the interfaces.
 
 ## 5. Next Planned Phase
-**Phase 10: True AI Integration**
-The extraction pipeline is fully functional but currently relies on deterministic heuristics. The next phase involves integrating Google Gemini to act as a fallback extractor for low-confidence candidates, as well as replacing the mocked `DomainExpansionService` and `QueryGenerationService` in the Brain with real LLM prompts.
+**Phase 11: Database Persistence & AI Fallback Integration**
+The deduplication engine is complete. The immediate next phase is saving these `CanonicalInternship` objects to Supabase. Concurrently, we must integrate Google Gemini as a fallback mechanism for candidates that fail deterministic extraction (replacing mocked Brain components and acting as a parser for low-confidence HTML).

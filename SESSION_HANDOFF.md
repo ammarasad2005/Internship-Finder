@@ -21,14 +21,12 @@ Before you write *any* code or make an architectural decision, you MUST read the
 5. `CURRENT_STATE.md` (Where the project is right now)
 
 ## 4. Current Status
-We have completed Phase 9. The Worker node executes optimized search waves dynamically routed to real APIs (Google CSE), fetches the HTML from the returned URLs, and uses a `cheerio`-based extraction engine to parse the DOM into validated `InternshipCandidate` objects.
-**However:** The AI Brain components (`DomainExpansionService`, `QueryGenerationService`) are still using deterministic string-matching instead of true Gemini prompts.
+We have completed Phase 10. The Worker node pipeline is now extremely mature: it executes budgeted search waves, fetches DOMs, parses them into candidates, and deduplicates them using a canonical hashing engine.
+**However:** The system is completely deterministic. The mocked AI Brain components still need real Gemini logic, and the final canonical records need to be saved to the database.
 
 ## 5. Exact Next Development Objective
-Your immediate objective should be negotiating **Phase 10: True AI Integration**. 
-This means taking the foundational mocked AI systems and wiring them up to the Google Gemini API.
-- Example task: Replace `DomainExpansionService` mock dictionaries with a Gemini structured JSON output prompt.
-- Example task: Implement an LLM fallback extractor for the `ExtractionEngine` when deterministic parsing returns a low confidence score.
+Your immediate objective should be negotiating **Phase 11: Database Persistence & AI Fallback Integration**.
+This means taking the output from the `DeduplicationEngine` and inserting it into Supabase. Furthermore, you must finally connect Google Gemini to replace the deterministic mock dictionaries in the Brain and act as a fallback extractor.
 
 **DO NOT** rewrite the infrastructure. **PLUG IN** to the existing `SearchProvider` interfaces and `WorkerLifecycle`.
 

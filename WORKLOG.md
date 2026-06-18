@@ -98,3 +98,12 @@ This document maintains a chronological history of the project's development, tr
   - Built `InternshipExtractor` utilizing `cheerio` to parse structured JSON-LD and DOM elements into a candidate schema.
   - Built `ExtractionConfidenceScorer` and `CandidateValidator` to gate database insertion based on data density and relevant keywords.
 - **Decisions:** Strictly deferred LLM usage. By utilizing a 100% deterministic pipeline (Regex + Cheerio), the system heavily protects AI quotas. LLMs will only be used in the future if the `confidenceScore` of a valid listing falls below a strict threshold.
+
+## Phase 10: Canonicalization & Deduplication Engine
+- **Goal:** Transform raw `InternshipCandidate` objects into unified, deduplicated `CanonicalInternship` records ready for database insertion.
+- **Actions:**
+  - Built `InternshipNormalizer` to string-clean domains, titles, and locations (e.g., stripping legal suffixes and standardizing Pakistani city abbreviations).
+  - Built `CanonicalKeyGenerator` to produce deterministic hashes (e.g., `devsinc:software_engineer_intern:lahore`).
+  - Built `DeduplicationEngine` and `InternshipMergeStrategy` to handle collision resolution, actively preferring Official Career Page data over third-party boards.
+  - Built `SourceAggregator` to maintain an array of all discovered URLs.
+- **Decisions:** Continued the philosophy of deterministic processing over AI. Relying on strict dictionary normalization heavily protects database integrity against duplicate postings without spending Gemini tokens.
