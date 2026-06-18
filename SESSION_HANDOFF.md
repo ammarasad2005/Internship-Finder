@@ -21,14 +21,14 @@ Before you write *any* code or make an architectural decision, you MUST read the
 5. `CURRENT_STATE.md` (Where the project is right now)
 
 ## 4. Current Status
-We have completed Phase 8C. The Worker node executes optimized search waves dynamically routed to real APIs (Google CSE) via a Provider Registry equipped with circuit breakers, quotas, and active failovers.
-**However:** The AI Brain components (`DomainExpansionService`, `QueryGenerationService`) are currently using deterministic string-matching instead of true Gemini prompts.
+We have completed Phase 9. The Worker node executes optimized search waves dynamically routed to real APIs (Google CSE), fetches the HTML from the returned URLs, and uses a `cheerio`-based extraction engine to parse the DOM into validated `InternshipCandidate` objects.
+**However:** The AI Brain components (`DomainExpansionService`, `QueryGenerationService`) are still using deterministic string-matching instead of true Gemini prompts.
 
 ## 5. Exact Next Development Objective
-Your immediate objective should be negotiating **Phase 9: Content Extraction and Matching**. 
-This means taking the raw URLs returned by the Execution engine, fetching their HTML content, and using an LLM to parse them into structured JSON internships.
-- Example task: Implement a generic web scraper (Cheerio/JSDOM).
-- Example task: Implement Gemini prompt logic to extract the internship payload and write it to the `internships` table.
+Your immediate objective should be negotiating **Phase 10: True AI Integration**. 
+This means taking the foundational mocked AI systems and wiring them up to the Google Gemini API.
+- Example task: Replace `DomainExpansionService` mock dictionaries with a Gemini structured JSON output prompt.
+- Example task: Implement an LLM fallback extractor for the `ExtractionEngine` when deterministic parsing returns a low confidence score.
 
 **DO NOT** rewrite the infrastructure. **PLUG IN** to the existing `SearchProvider` interfaces and `WorkerLifecycle`.
 

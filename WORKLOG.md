@@ -89,3 +89,12 @@ This document maintains a chronological history of the project's development, tr
   - Connected `ProviderRegistry.reportSuccess` and `ProviderRegistry.reportFailure` to the execution metrics.
   - Built an active failover trap that calls `ProviderRouter.getFailover()` if a query completely crashes.
 - **Decisions:** Stopped retrying fatal HTTP errors (429, 403) to prevent the worker from hanging. The execution loop now seamlessly falls back to backup providers if the primary (like Google CSE) hits a daily limit or goes down.
+
+## Phase 9: Extraction & Classification Engine
+- **Goal:** Transform raw search URLs into structured `InternshipCandidate` payloads using purely deterministic methods.
+- **Actions:**
+  - Built `PageFetcher` using native `fetch` with browser header spoofing.
+  - Built `PageClassifier` to waterfall URLs and HTML into distinct page categories (e.g., `internship_listing`).
+  - Built `InternshipExtractor` utilizing `cheerio` to parse structured JSON-LD and DOM elements into a candidate schema.
+  - Built `ExtractionConfidenceScorer` and `CandidateValidator` to gate database insertion based on data density and relevant keywords.
+- **Decisions:** Strictly deferred LLM usage. By utilizing a 100% deterministic pipeline (Regex + Cheerio), the system heavily protects AI quotas. LLMs will only be used in the future if the `confidenceScore` of a valid listing falls below a strict threshold.

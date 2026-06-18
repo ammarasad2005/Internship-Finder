@@ -1,10 +1,10 @@
 # Current State: Internship Finder
 
-**Last Updated:** Phase 8C Completion
+**Last Updated:** Phase 9 Completion
 
 ## 1. Codebase Status
-- **Current Git Branch:** `phase-8c-provider-execution-refactor`
-- **Application Status:** The infrastructure layer is 100% complete. The Discovery layer efficiently plans and budgets search waves, and the Provider layer executes real queries via dynamic routing, logging raw payloads locally for debugging, while fully enforcing API quotas and circuit breakers.
+- **Current Git Branch:** `phase-9-extraction`
+- **Application Status:** The infrastructure layer is 100% complete. The Discovery layer efficiently plans and budgets search waves, the Provider layer executes real queries, and the Extraction layer deterministically fetches and parses live DOMs into validated `InternshipCandidate` objects.
 
 ## 2. Implemented Systems
 - Next.js 15 App Router Architecture with `src/features/` module separation.
@@ -26,5 +26,5 @@ The following systems currently use mocked stubs and require actual integration 
 - **TypeScript Generation:** `types.ts` was manually crafted for existing features. If the schema updates, the developer must either run the Supabase CLI generator or manually sync the interfaces.
 
 ## 5. Next Planned Phase
-**Phase 9: Content Extraction and Matching**
-The system now retrieves raw Google search links representing internships. The next phase requires fetching the raw HTML of those URLs (e.g., via Cheerio/JSDOM) and utilizing a Gemini LLM prompt to parse the unstructured text into a structured database `internships` payload, and finally scoring it against the user's profile.
+**Phase 10: True AI Integration**
+The extraction pipeline is fully functional but currently relies on deterministic heuristics. The next phase involves integrating Google Gemini to act as a fallback extractor for low-confidence candidates, as well as replacing the mocked `DomainExpansionService` and `QueryGenerationService` in the Brain with real LLM prompts.
