@@ -1,5 +1,7 @@
 import { SearchProvider } from './SearchProvider.interface';
 import { SearchResult } from '../types';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 
 export class GoogleCSEProvider implements SearchProvider {
   name = 'google_cse';
@@ -31,6 +33,16 @@ export class GoogleCSEProvider implements SearchProvider {
     }
 
     const data = await response.json();
+    
+    // Store raw search responses for debugging
+    try {
+      const debugDir = path.join(process.cwd(), '.debug', 'search_responses');
+      await fs.mkdir(debugDir, { recursive: true });
+      const filename = `google_cse_${Date.now()}_${query.replace(/[^a-z0-9]/gi, '_').substring(0, 30)}.json`;
+      await fs.writeFile(path.join(debugDir, filename), JSON.stringify(data, null, 2));
+    } catch (debugErr) {
+      console.warn('[GoogleCSEProvider] Failed to write debug response:', debugErr);
+    }
     
     if (!data.items || data.items.length === 0) {
       return []; // No results found
