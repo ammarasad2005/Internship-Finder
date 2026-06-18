@@ -1,8 +1,8 @@
 import { SessionService } from '@/features/research/services/session.service';
 import { ResearchPlanBuilder } from '@/features/brain/services/research-plan.service';
+import { SearchWavePlanner } from '@/features/discovery/services/search-wave.planner';
 import { CostTracker } from './CostTracker';
 import { ResearchExecutor } from './ResearchExecutor';
-import { MockSearchProvider } from '../providers/MockSearchProvider';
 
 /**
  * WorkerLifecycle manages the global state of the worker.
@@ -30,15 +30,20 @@ export class WorkerLifecycle {
       // 3. Build the Brain Plan
       await SessionService.publishEvent(sessionId, 'planning_started', 'Brain is analyzing profile and generating query intents...');
       const plan = await ResearchPlanBuilder.buildPlan(profileId, sessionId);
-      costTracker.logTokens(plan.estimatedTokensRequired);
       await SessionService.publishEvent(sessionId, 'planning_completed', `Brain generated ${plan.queries.length} specific search queries.`);
 
-      // 4. Execute the Plan
-      const provider = new MockSearchProvider();
-      const executor = new ResearchExecutor(sessionId, provider);
-      const metrics = await executor.executePlan(plan);
+      // 4. Discovery Strategy: Build the Execution Wave
+      const wave = SearchWavePlanner.buildWave(1, plan.queries, new Set(), { 
+        maxQueriesPerWave: 15, 
+        maxCostPerWave: 100 
+      });
+      costTracker.logTokens(wave.totalEstimatedCost); // Log estimated cost against budget tracker
 
-      // 5. Cleanup and Complete
+      // 5. Execute the Optimized Wave
+      const executor = new ResearchExecutor(sessionId);
+      const metrics = await executor.executeWave(wave);
+
+      // 6. Cleanup and Complete
       await costTracker.flushToDatabase();
       await SessionService.publishEvent(sessionId, 'matching_completed', `AI Matching finalized. Saved ${metrics.resultsFound} potential matches.`);
       await SessionService.updateSessionStatus(sessionId, 'completed');

@@ -20,4 +20,5 @@ export interface ProviderConfig {
   capabilities: string[]; // Search intent categories (e.g. 'role_based', 'company_based')
   quota: ProviderQuota;
   health: ProviderHealth;
+  instance?: any; // The actual executable SearchProvider instance
 }

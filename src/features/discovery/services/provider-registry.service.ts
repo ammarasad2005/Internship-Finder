@@ -1,8 +1,8 @@
 import { ProviderConfig } from '../types/provider';
+import { GoogleCSEProvider } from '@/features/worker/providers/GoogleCSEProvider';
+import { MockSearchProvider } from '@/features/worker/providers/MockSearchProvider';
 
 export class ProviderRegistry {
-  // In a real application, this state might be synchronized with a Redis cache or Database table
-  // to allow distributed workers to share quota and health states.
   private static providers: Map<string, ProviderConfig> = new Map();
 
   static register(config: ProviderConfig) {
@@ -16,7 +16,7 @@ export class ProviderRegistry {
   static getActiveProviders(): ProviderConfig[] {
     const now = new Date().toISOString();
     return Array.from(this.providers.values()).filter(p => {
-      if (!p.enabled) return false;
+      if (!p.enabled || !p.instance) return false;
       
       // Circuit Breaker: If dead, check if it's time for a recovery ping
       if (p.health.status === 'dead') {
@@ -87,7 +87,8 @@ ProviderRegistry.register({
   costPerQuery: 5,
   capabilities: ['company_based', 'location_based', 'skill_based'],
   quota: { dailyLimit: 100, usedToday: 0, resetsAt: new Date(new Date().setHours(24,0,0,0)).toISOString() },
-  health: { status: 'healthy', consecutiveFailures: 0 }
+  health: { status: 'healthy', consecutiveFailures: 0 },
+  instance: new MockSearchProvider()
 });
 
 ProviderRegistry.register({
@@ -98,16 +99,25 @@ ProviderRegistry.register({
   costPerQuery: 10,
   capabilities: ['role_based'],
   quota: { dailyLimit: 50, usedToday: 0, resetsAt: new Date(new Date().setHours(24,0,0,0)).toISOString() },
-  health: { status: 'healthy', consecutiveFailures: 0 }
+  health: { status: 'healthy', consecutiveFailures: 0 },
+  instance: new MockSearchProvider() // Reuse mock for now
 });
+
+let googleCseInstance;
+try {
+  googleCseInstance = new GoogleCSEProvider();
+} catch (e) {
+  // Silent fail if env vars missing
+}
 
 ProviderRegistry.register({
   id: 'google_cse',
   name: 'Google Custom Search (Real API)',
-  enabled: process.env.GOOGLE_CSE_API_KEY ? true : false,
+  enabled: !!googleCseInstance,
   weight: 100,
   costPerQuery: 1, 
   capabilities: ['company_based', 'location_based', 'skill_based', 'role_based'],
   quota: { dailyLimit: 100, usedToday: 0, resetsAt: new Date(new Date().setHours(24,0,0,0)).toISOString() },
-  health: { status: 'healthy', consecutiveFailures: 0 }
+  health: { status: 'healthy', consecutiveFailures: 0 },
+  instance: googleCseInstance
 });
