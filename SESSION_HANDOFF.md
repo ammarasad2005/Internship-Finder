@@ -21,12 +21,12 @@ Before you write *any* code or make an architectural decision, you MUST read the
 5. `CURRENT_STATE.md` (Where the project is right now)
 
 ## 4. Current Status
-We have completed Phase 8B. The Worker node executes optimized search waves dynamically routed to real APIs (Google CSE) and successfully returns normalized URLs.
+We have completed Phase 8C. The Worker node executes optimized search waves dynamically routed to real APIs (Google CSE) via a Provider Registry equipped with circuit breakers, quotas, and active failovers.
 **However:** The AI Brain components (`DomainExpansionService`, `QueryGenerationService`) are currently using deterministic string-matching instead of true Gemini prompts.
 
 ## 5. Exact Next Development Objective
 Your immediate objective should be negotiating **Phase 9: Content Extraction and Matching**. 
-This means taking the raw URLs returned by the Google CSE Provider, fetching their HTML content, and using an LLM to parse them into structured JSON internships.
+This means taking the raw URLs returned by the Execution engine, fetching their HTML content, and using an LLM to parse them into structured JSON internships.
 - Example task: Implement a generic web scraper (Cheerio/JSDOM).
 - Example task: Implement Gemini prompt logic to extract the internship payload and write it to the `internships` table.
 

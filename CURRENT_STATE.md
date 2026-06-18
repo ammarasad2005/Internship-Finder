@@ -1,10 +1,10 @@
 # Current State: Internship Finder
 
-**Last Updated:** Phase 8B Completion
+**Last Updated:** Phase 8C Completion
 
 ## 1. Codebase Status
-- **Current Git Branch:** `phase-8b-google-cse-provider`
-- **Application Status:** The infrastructure layer is 100% complete. The Discovery layer efficiently plans and budgets search waves, and the Provider layer executes real queries via Google Custom Search, logging raw payloads locally for debugging.
+- **Current Git Branch:** `phase-8c-provider-execution-refactor`
+- **Application Status:** The infrastructure layer is 100% complete. The Discovery layer efficiently plans and budgets search waves, and the Provider layer executes real queries via dynamic routing, logging raw payloads locally for debugging, while fully enforcing API quotas and circuit breakers.
 
 ## 2. Implemented Systems
 - Next.js 15 App Router Architecture with `src/features/` module separation.

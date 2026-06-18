@@ -79,3 +79,13 @@ This document maintains a chronological history of the project's development, tr
   - Implemented `SearchResult` normalization to flatten Google JSON payloads.
   - Built a local debug storage utility to drop raw search payloads into `.debug/search_responses/`.
 - **Decisions:** Used native `fetch` with strict HTTP 429 Quota Exceeded trapping to perfectly synchronize with the `WorkerLifecycle` exponential backoff and circuit breaker algorithms.
+
+## Phase 8C: Provider Execution Refactor
+- **Goal:** Unify the Discovery Strategy and Provider Registry into the Worker Lifecycle.
+- **Actions:**
+  - Removed the hardcoded mock provider from `WorkerLifecycle`.
+  - Refactored `ResearchExecutor` to accept `SearchWave` tasks instead of a raw `ResearchPlan`.
+  - Implemented dynamic per-query provider selection inside the execution loop.
+  - Connected `ProviderRegistry.reportSuccess` and `ProviderRegistry.reportFailure` to the execution metrics.
+  - Built an active failover trap that calls `ProviderRouter.getFailover()` if a query completely crashes.
+- **Decisions:** Stopped retrying fatal HTTP errors (429, 403) to prevent the worker from hanging. The execution loop now seamlessly falls back to backup providers if the primary (like Google CSE) hits a daily limit or goes down.
