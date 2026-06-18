@@ -115,3 +115,12 @@ This document maintains a chronological history of the project's development, tr
   - Reduced `InternshipNormalizer` aggressiveness, retaining essential entity modifiers like `technologies` and `software`, and strictly differentiating between `remote` and `hybrid`.
   - Added native `requiresManualReview` flags to the `CanonicalInternship` payload.
 - **Decisions:** Accepted the architectural trade-off of "fracturing" (creating duplicate DB records for the same generic job scraped across different boards) in order to completely eliminate the fatal risk of colliding entirely distinct jobs together.
+
+## Phase 11: Persistence Pipeline
+- **Goal:** Persist `CanonicalInternship` records into Supabase while enforcing deduplication constraints and provenance tracking.
+- **Actions:**
+  - Built `DatabaseMappingLayer` to transform in-memory models to Supabase `internships` and `internship_sources` rows, dynamically injecting deterministic SQL `tags`.
+  - Built `InternshipRepository` and `InternshipSourcePersistenceService` to execute direct database queries.
+  - Implemented `UpsertStrategy` utilizing Supabase's native `ON CONFLICT` resolution to handle canonical collisions.
+  - Built `InternshipPersistenceService` as the orchestrator to process batches and compile `PersistenceMetrics`.
+- **Decisions:** Strictly utilized native PostgreSQL upsert mechanisms to resolve collisions instead of executing an inefficient "check if exists -> insert or update" sequential pattern, reducing database round-trips by 50%.
