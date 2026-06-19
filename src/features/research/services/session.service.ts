@@ -5,8 +5,8 @@ export class SessionService {
   /**
    * Initializes a new research session in 'pending' status.
    */
-  static async createSession(profileId: string): Promise<ResearchSession> {
-    const supabase = createClient();
+  static async createSession(profileId: string, supabaseClient?: any): Promise<ResearchSession> {
+    const supabase = supabaseClient || createClient();
     const { data, error } = await supabase
       .from('search_sessions')
       .insert({ profile_id: profileId, status: 'pending' })
@@ -16,7 +16,7 @@ export class SessionService {
     if (error) throw new Error(error.message);
     
     // Publish initial event
-    await this.publishEvent(data.id, 'session_created', 'Research session initialized and queued.');
+    await this.publishEvent(data.id, 'session_created', 'Research session initialized and queued.', null, supabase);
     
     return data as ResearchSession;
   }
@@ -24,8 +24,8 @@ export class SessionService {
   /**
    * Fetches all sessions for a user.
    */
-  static async getUserSessions(profileId: string): Promise<ResearchSession[]> {
-    const supabase = createClient();
+  static async getUserSessions(profileId: string, supabaseClient?: any): Promise<ResearchSession[]> {
+    const supabase = supabaseClient || createClient();
     const { data, error } = await supabase
       .from('search_sessions')
       .select('*')
@@ -39,8 +39,8 @@ export class SessionService {
   /**
    * Fetches a specific session and its timeline events.
    */
-  static async getSessionDetails(sessionId: string) {
-    const supabase = createClient();
+  static async getSessionDetails(sessionId: string, supabaseClient?: any) {
+    const supabase = supabaseClient || createClient();
     const { data: session, error: sessionError } = await supabase
       .from('search_sessions')
       .select('*')
@@ -63,8 +63,8 @@ export class SessionService {
   /**
    * Internal worker tool to publish timeline events to the database.
    */
-  static async publishEvent(sessionId: string, eventType: string, message: string, metadata: any = null) {
-    const supabase = createClient();
+  static async publishEvent(sessionId: string, eventType: string, message: string, metadata: any = null, supabaseClient?: any) {
+    const supabase = supabaseClient || createClient();
     await supabase.from('research_session_events').insert({
       session_id: sessionId,
       event_type: eventType,
@@ -76,8 +76,8 @@ export class SessionService {
   /**
    * Internal worker tool to update session status.
    */
-  static async updateSessionStatus(sessionId: string, status: SessionStatus) {
-    const supabase = createClient();
+  static async updateSessionStatus(sessionId: string, status: SessionStatus, supabaseClient?: any) {
+    const supabase = supabaseClient || createClient();
     const updatePayload: any = { status };
     if (status === 'running') updatePayload.started_at = new Date().toISOString();
     if (status === 'completed' || status === 'failed') updatePayload.completed_at = new Date().toISOString();
@@ -88,8 +88,8 @@ export class SessionService {
   /**
    * Internal worker tool to log a specific research run (search query execution).
    */
-  static async createRun(sessionId: string, queryUsed: string, searchProvider: string, depthLevel: number, resultsFound: number) {
-    const supabase = createClient();
+  static async createRun(sessionId: string, queryUsed: string, searchProvider: string, depthLevel: number, resultsFound: number, supabaseClient?: any) {
+    const supabase = supabaseClient || createClient();
     await supabase.from('research_runs').insert({
       session_id: sessionId,
       query_used: queryUsed,

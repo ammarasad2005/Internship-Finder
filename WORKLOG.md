@@ -209,3 +209,14 @@ This document maintains a chronological history of the project's development, tr
   - Omitted `user_feedback` field updates during backend `MatchRepository` upserts to guarantee that student actions (e.g. saves or rejections) are never overwritten when new match waves execute.
 - **Audit Verdict:** PASSED. Verified zero compilation errors under `npx tsc --noEmit` and strict authorization checks at both route and action levels.
 
+## Phase 15 Planning: Background Scheduling & Worker Decoupling
+- **Goal:** Analyze the current worker architecture and design a decoupled execution strategy to solve Vercel's 10-second request limits and keep secrets out of client bundles.
+- **Actions:**
+  - Evaluated 6 candidate subsystems (Worker Decoupling, Notifications, Feedback Loop, Analytics, Realtime Updates, Admin tools).
+  - Selected Worker Decoupling via GitHub Actions Repository Dispatch as the highest-priority phase.
+  - Authored `PHASE_15_ARCHITECTURE.md` specifying data flow, database RLS interactions, security import guards, execution costs, and a detailed implementation roadmap.
+- **Decisions:**
+  - Standardized on GitHub Actions dispatch as a zero-cost ($0) background runner satisfying the 50-user execution quota.
+  - Recommended the immediate introduction of `import 'server-only'` guards on matching and worker services to completely prevent bundling issues in client components.
+
+

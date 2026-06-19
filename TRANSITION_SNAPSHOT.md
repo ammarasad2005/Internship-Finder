@@ -51,7 +51,7 @@ This is a point-in-time architectural snapshot created explicitly to preserve co
 - `QueryRankingService` (Currently returns priority score 0 for everything).
 
 ### What Still Requires Implementation
-- **Phase 15:** Background scheduling and worker decoupling from Vercel's request thread.
+- **Phase 15:** Decoupling worker background thread and triggering it via GitHub API dispatches.
 - **Phase 16:** Notification systems.
 
 ---
@@ -62,9 +62,10 @@ This is a point-in-time architectural snapshot created explicitly to preserve co
 
 **Step 1:** Read `SESSION_HANDOFF.md` for precise state context.
 
-**Step 2:** Merge `phase-14-recommendation-ui` into the main branch.
+**Step 2:** Merge `phase-15-planning` into the main branch.
 
 **Step 3:** Checkout or create branch `phase-15-worker-decoupling`.
 
-**Step 4:** Begin implementing the background runner decoupling.
+**Step 4:** Begin implementing the background runner trigger API, CLI runner script, and Actions workflow configuration per `PHASE_15_ARCHITECTURE.md`.
+
 

@@ -1,3 +1,4 @@
+import 'server-only';
 import { z } from 'zod';
 import { GeminiService } from '@/features/brain/services/gemini.service';
 import { ActiveProfileData, InternshipData } from '../types';

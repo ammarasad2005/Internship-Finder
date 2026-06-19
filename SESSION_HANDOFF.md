@@ -27,12 +27,14 @@ Phase 14 (Recommendation UI & Match Feedback Loop) is fully implemented, verifie
 *There are no compilation or runtime blockers at this time.*
 
 ## 6. Next Development Branch
-`phase-14-recommendation-ui` remains active until merged, after which we will branch to `phase-15-worker-decoupling`.
+`phase-15-planning` remains active until merged, after which we will branch to `phase-15-worker-decoupling` for implementation.
 
 ## 7. Success Criteria for Phase 15
-- Decouple the `WorkerLifecycle` execution from the frontend Next.js request thread.
-- Establish background run triggers (e.g. GitHub Actions, Vercel Cron, or a Postgres trigger/PG_CRON configuration) to execute background search runs and match generation.
-- Remove the synchronous timeout risk from Vercel deployments.
+- Create Next.js API route `/api/sessions/trigger` to dispatch GitHub Action workflows.
+- Create CLI node script `src/scripts/run-worker.ts` with server-only Supabase client bindings.
+- Establish Repository Dispatch workflows in `.github/workflows/worker.yml`.
+- Verify no backend worker modules leak to client React bundles.
+
 
 ## ACCOUNT TRANSITION RECOVERY PROCEDURE
 

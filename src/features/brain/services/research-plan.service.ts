@@ -9,15 +9,15 @@ export class ResearchPlanBuilder {
   /**
    * Orchestrates the Brain architecture to output an execution plan.
    */
-  static async buildPlan(profileId: string, sessionId: string): Promise<ResearchPlan> {
+  static async buildPlan(profileId: string, sessionId: string, supabaseClient?: any): Promise<ResearchPlan> {
+    const supabase = supabaseClient || createClient();
+
     // 1. Profile Analysis
-    const profileData = await ProfileService.getProfile(profileId);
+    const profileData = await ProfileService.getProfile(profileId, supabase);
     if (!profileData || !profileData.profile) throw new Error("Profile not found");
 
     const skills = profileData.skills.map((s: any) => s.skill_name);
     const projects = profileData.projects.map((p: any) => p.technologies ? p.technologies.join(' ') : p.project_name);
-
-    const supabase = createClient();
     
     // 2. Domain Expansion
     const expandedDomains = await DomainExpansionService.expandProfile(skills, projects, supabase);

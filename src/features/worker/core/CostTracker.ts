@@ -4,10 +4,12 @@ export class CostTracker {
   private sessionId: string;
   private profileId: string;
   private accumulatedTokens: number = 0;
+  private supabaseClient: any;
 
-  constructor(sessionId: string, profileId: string) {
+  constructor(sessionId: string, profileId: string, supabaseClient?: any) {
     this.sessionId = sessionId;
     this.profileId = profileId;
+    this.supabaseClient = supabaseClient;
   }
 
   /**
@@ -23,7 +25,7 @@ export class CostTracker {
   async flushToDatabase() {
     if (this.accumulatedTokens === 0) return;
     
-    const supabase = createClient();
+    const supabase = this.supabaseClient || createClient();
     await supabase.from('research_usage_logs').insert({
       session_id: this.sessionId,
       profile_id: this.profileId,

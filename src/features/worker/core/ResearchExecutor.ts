@@ -8,9 +8,11 @@ import { SessionService } from '@/features/research/services/session.service';
 export class ResearchExecutor {
   private sessionId: string;
   private metrics: WorkerMetrics;
+  private supabaseClient: any;
 
-  constructor(sessionId: string) {
+  constructor(sessionId: string, supabaseClient?: any) {
     this.sessionId = sessionId;
+    this.supabaseClient = supabaseClient;
     this.metrics = {
       queriesExecuted: 0,
       resultsFound: 0,
@@ -26,7 +28,7 @@ export class ResearchExecutor {
    */
   async executeWave(wave: SearchWave): Promise<WorkerMetrics> {
     const startTime = Date.now();
-    await SessionService.publishEvent(this.sessionId, 'search_wave_started', `Starting execution wave ${wave.waveNumber} with ${wave.tasks.length} planned tasks.`);
+    await SessionService.publishEvent(this.sessionId, 'search_wave_started', `Starting execution wave ${wave.waveNumber} with ${wave.tasks.length} planned tasks.`, null, this.supabaseClient);
 
     for (const task of wave.tasks) {
       await this.executeTaskWithRetry(task);
@@ -35,7 +37,7 @@ export class ResearchExecutor {
     }
 
     this.metrics.executionTimeMs = Date.now() - startTime;
-    await SessionService.publishEvent(this.sessionId, 'search_wave_completed', `Execution wave finished. Discovered ${this.metrics.resultsFound} raw links.`);
+    await SessionService.publishEvent(this.sessionId, 'search_wave_completed', `Execution wave finished. Discovered ${this.metrics.resultsFound} raw links.`, null, this.supabaseClient);
     
     return this.metrics;
   }
@@ -47,7 +49,7 @@ export class ResearchExecutor {
     const providerConfig = ProviderRegistry.getProvider(task.providerId);
     
     if (!providerConfig || !providerConfig.instance) {
-      await SessionService.publishEvent(this.sessionId, 'query_failed', `Provider ${task.providerId} not found or disabled.`);
+      await SessionService.publishEvent(this.sessionId, 'query_failed', `Provider ${task.providerId} not found or disabled.`, null, this.supabaseClient);
       return;
     }
     
@@ -68,7 +70,8 @@ export class ResearchExecutor {
         task.query.text, 
         provider.name, 
         1, 
-        results.length
+        results.length,
+        this.supabaseClient
       );
 
     } catch (error: any) {
@@ -87,21 +90,21 @@ export class ResearchExecutor {
         await new Promise(r => setTimeout(r, backoffMs));
         await this.executeTaskWithRetry(task, attempt + 1);
       } else {
-        await SessionService.publishEvent(this.sessionId, 'query_failed', `Failed to execute query: "${task.query.text}" on ${provider.name}. Reason: ${errorMessage}`);
+        await SessionService.publishEvent(this.sessionId, 'query_failed', `Failed to execute query: "${task.query.text}" on ${provider.name}. Reason: ${errorMessage}`, null, this.supabaseClient);
         
         // FAILOVER LOGIC
         // The current provider failed permanently. The Router automatically excludes degraded providers.
         const failoverProvider = ProviderRouter.getFailover(task.providerId, task.query);
         
         if (failoverProvider && failoverProvider.instance) {
-          await SessionService.publishEvent(this.sessionId, 'failover_triggered', `Rerouting query "${task.query.text}" to backup provider: ${failoverProvider.name}`);
+          await SessionService.publishEvent(this.sessionId, 'failover_triggered', `Rerouting query "${task.query.text}" to backup provider: ${failoverProvider.name}`, null, this.supabaseClient);
           
           // Re-map the task to the failover provider and start fresh
           task.providerId = failoverProvider.id;
           task.estimatedCost = failoverProvider.costPerQuery;
           await this.executeTaskWithRetry(task, 1);
         } else {
-          await SessionService.publishEvent(this.sessionId, 'query_failed', `No failover providers available for query: "${task.query.text}". Abandoning task.`);
+          await SessionService.publishEvent(this.sessionId, 'query_failed', `No failover providers available for query: "${task.query.text}". Abandoning task.`, null, this.supabaseClient);
         }
       }
     }

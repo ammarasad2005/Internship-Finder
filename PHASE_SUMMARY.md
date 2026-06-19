@@ -26,13 +26,13 @@ This document is the ultimate continuity guide designed to perfectly restore pro
 - **Data Flow:** UI `StartSession` -> `SearchWavePlanner` -> `ProviderRouter` -> `GoogleCSEProvider` -> Normalized `SearchResult[]` -> Extraction -> Canonicalization -> Persistence -> MatchEngine -> Student UI (Matches Page + Feedback Loop).
 
 ## 3. Current Branch
-`phase-14-recommendation-ui` (until merged)
+`phase-15-planning` (until merged)
 
 ## 4. Most Recent Commits
 ```text
-3c6670e (HEAD -> phase-14-recommendation-ui) feat: complete phase 14 recommendation ui
+ed1b0c0 (HEAD -> phase-15-planning) docs: update continuity after phase 14 completion
+3c6670e feat: complete phase 14 recommendation ui
 820922a feat: partial phase 14 recommendation ui implementation
-c10a06d docs: update continuity after phase 13 completion
 ```
 
 ## 5. Current Execution Flow
@@ -52,7 +52,7 @@ c10a06d docs: update continuity after phase 13 completion
 
 ## 7. Immediate Next Phase
 **Phase 15: Background Scheduling & Worker Decoupling**
-See: `PHASE_14_ARCHITECTURE.md`
+See: `PHASE_15_ARCHITECTURE.md`
 
 ## 8. Known Technical Debt
 - **Sequential Gemini Scaling Bottleneck:** Explanation generation will exceed Vercel 5-minute timeouts if active users exceed ~50.

@@ -58,8 +58,8 @@ export class ProfileService {
   /**
    * Fetches the user's complete profile from the database.
    */
-  static async getProfile(userId: string) {
-    const supabase = createClient();
+  static async getProfile(userId: string, supabaseClient?: any) {
+    const supabase = supabaseClient || createClient();
     
     const { data: profile, error: profileError } = await supabase
       .from('profiles')

@@ -37,7 +37,8 @@
 ## 5. Immediate Next Phase
 **Phase 15: Background Scheduling & Worker Decoupling**
 
-The matches UI is now live. We must decouple the `WorkerLifecycle` execution from the synchronous Next.js request thread to eliminate serverless timeout limits as concurrency grows.
+The matches UI is now live. Phase 15 Architecture Planning is complete. We will decouple the `WorkerLifecycle` execution from the synchronous Next.js request thread using GitHub Actions Repository Dispatches to eliminate serverless timeout limits and secure database key access.
 
-See `NEXT_PHASE.md` for planning.
+See `PHASE_15_ARCHITECTURE.md` for the complete execution flow and trigger details.
+
 

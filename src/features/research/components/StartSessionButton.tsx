@@ -2,8 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { SessionService } from '../services/session.service';
-import { MockWorker } from '@/features/worker/MockWorker';
 
 export function StartSessionButton({ profileId }: { profileId: string }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -12,13 +10,26 @@ export function StartSessionButton({ profileId }: { profileId: string }) {
   const handleStart = async () => {
     setIsLoading(true);
     try {
-      const session = await SessionService.createSession(profileId);
-      // Simulate the worker picking it up immediately in the background
-      MockWorker.start(session.id, profileId);
+      const response = await fetch('/api/sessions/trigger', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ profileId }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to trigger search session');
+      }
+
+      const data = await response.json();
+      
       // Redirect to the detail page
-      router.push(`/dashboard/sessions/${session.id}`);
-    } catch (err) {
+      router.push(`/dashboard/sessions/${data.sessionId}`);
+    } catch (err: any) {
       console.error(err);
+      alert(err.message || 'Failed to start session');
       setIsLoading(false);
     }
   };

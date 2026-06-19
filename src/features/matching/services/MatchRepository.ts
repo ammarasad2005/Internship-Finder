@@ -1,3 +1,4 @@
+import 'server-only';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { Database } from '@/lib/supabase/types';
 import { MatchResult } from '../types';
