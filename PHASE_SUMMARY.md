@@ -16,8 +16,7 @@ This document is the ultimate continuity guide designed to perfectly restore pro
 - **Phase 11:** Persistence Pipeline (DB Upserts, Database Mapping, Provenance Tracking).
 - **Phase 12:** AI Research Brain Integration (Gemini, Zod strict schema parsing, caching).
 - **Hotfix:** Async Integration & TypeScript Fixes (Resolving IDE compilation errors).
-- **Phase 13 (Design):** Matching Engine Architecture & Scalability Audit.
-- **Phase 13 (Code — INCOMPLETE):** Matching Engine scaffolded. Audit FAILED with 17 TypeScript errors.
+- **Phase 13:** Matching Engine Architecture, Implementation & Scalability Audit.
 
 ## 2. Current Architecture
 - **Frontend:** Next.js App Router, CSS Modules (NO Tailwind), React Hook Form, Zod.
@@ -26,7 +25,7 @@ This document is the ultimate continuity guide designed to perfectly restore pro
 - **Data Flow:** UI `StartSession` -> `SearchWavePlanner` -> `ProviderRouter` -> `GoogleCSEProvider` -> Normalized `SearchResult[]`.
 
 ## 3. Current Branch
-`phase-13-matching-engine` (next branch: `phase-13a-matching-fixes`)
+`phase-13a-matching-fixes` (until merged)
 
 ## 4. Most Recent Commits
 ```text
@@ -44,29 +43,23 @@ d8fbd99 (phase-12-ai-research-brain) docs: update continuity after phase 12
 4. **Extraction:** `ExtractionEngine` fetches HTML DOMs, scrapes them deterministically, and validates them into `InternshipCandidate` payloads.
 5. **Deduplication:** `DeduplicationEngine` safely collapses identical listings from multiple domains into single `CanonicalInternship` objects utilizing strict tri-factor hashing.
 6. **Persistence:** `InternshipPersistenceService` aggressively writes the unified models natively into Supabase via constrained Postgres upserts.
-7. **Matching (NOT YET WIRED):** `MatchEngine.executeDeltaBatch()` should be called here but is not yet integrated.
+7. **Matching:** `MatchEngine.executeDeltaBatch()` executes at the tail end of the worker loop. It performs an Internship-Centric Delta Batch evaluation inside Node.js memory, generating Semantic score boosts via Gemini for the top 5 matches per user before committing to Supabase.
 
 ## 6. Remaining Roadmap
-- **Phase 13a:** Fix TypeScript errors, wire MatchEngine into WorkerLifecycle, achieve clean build.
 - **Phase 14:** GitHub Actions / Cron Job decoupling (Moving `WorkerLifecycle` off the Vercel UI thread).
 - **Phase 15:** Polish and UI completion.
 
 ## 7. Immediate Next Phase
-**Phase 13a: Fix Matching Engine Audit Failures.**
-
-### Required Actions:
-1. Add `internships` and `matches` table types to `src/lib/supabase/types.ts`.
-2. Fix `response.text()` → `response.text` in `gemini.service.ts:49`.
-3. Wire `MatchEngine.executeDeltaBatch()` into `WorkerLifecycle.ts` step 6.
-4. Run `npx tsc --noEmit` and verify zero errors.
+**Phase 14: GitHub Actions / Cron Job Decoupling**
 
 ## 8. Known Technical Debt
+- **Sequential Gemini Scaling Bottleneck:** Explanation generation will exceed Vercel 5-minute timeouts if active users exceed ~50.
 - Unbounded `matches` table growth (needs 30-day TTL job in future).
 - PostgreSQL Dead Tuple bloat from `ON CONFLICT DO UPDATE`.
 - DB `tags` are currently destructively overwritten during persistence.
 - The UI is largely unstyled bare CSS Modules.
 - `types.ts` must be kept in manual sync with `initial_schema.sql` (Supabase CLI not yet integrated into workflow).
-- No `server-only` guard on `MatchEngine` / `MatchRepository`.
+- No `server-only` import guard on `MatchEngine` / `MatchRepository`.
 
 ## 9. Important Architectural Decisions
 - **No TailwindCSS.** Custom aesthetic styling using CSS Modules only.

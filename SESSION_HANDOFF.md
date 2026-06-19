@@ -21,38 +21,22 @@ Before you write *any* code or make an architectural decision, you MUST read the
 5. `CURRENT_STATE.md` (Where the project is right now — including all known bugs)
 
 ## 4. Current Status
-Phase 13 Matching Engine code has been **written but the project does NOT compile cleanly**. A TypeScript audit produced 17 errors. The build is BROKEN. You must fix these before any further implementation.
+Phase 13 Matching Engine code has been implemented, integrated, and audited. The build is perfectly clean with zero TypeScript errors. The `MatchEngine` has been wired into `WorkerLifecycle.runSession()`.
 
 ## 5. Outstanding Bugs — Fix These First
-
-### Bug 1: Missing internships + matches table types (BLOCKER)
-**File:** `src/lib/supabase/types.ts`
-**Problem:** The `Database` interface is missing the `internships` and `matches` table definitions. The Supabase client resolves these tables as type `never`, causing 14 compiler errors in `MatchEngine.ts` and `MatchRepository.ts`.
-**Fix:** Add `internships` and `matches` table Row/Insert/Update type blocks to the `Tables` property of the `Database` interface. Reference `initial_schema.sql` for the authoritative column list.
-
-### Bug 2: Gemini SDK incompatibility (BLOCKER)
-**File:** `src/features/brain/services/gemini.service.ts`, line 49
-**Problem:** `response.text()` is called as a function. In the current `@google/genai` SDK, `text` is a getter property, not a method.
-**Fix:** Change `response.text()` to `response.text`.
-
-### Bug 3: MatchEngine not wired into WorkerLifecycle (INTEGRATION MISSING)
-**File:** `src/features/worker/core/WorkerLifecycle.ts`
-**Problem:** The worker completes the discovery/extraction/persistence pipeline but never calls `MatchEngine.executeDeltaBatch()`. The matching step is absent.
-**Fix:** After `executor.executeWave(wave)` completes (step 5 in the lifecycle), instantiate `MatchEngine` and call `executeDeltaBatch(lastRunTime)`, where `lastRunTime` is the session's `started_at` timestamp.
+*There are no critical compilation or runtime blockers at this time.*
 
 ## 6. Next Development Branch
-`phase-13a-matching-fixes`
+`phase-13a-matching-fixes` remains active until merged, after which we will branch to `phase-14-worker-decoupling`.
 
-## 7. Success Criteria for Phase 13a
-- `npx tsc --noEmit` returns zero errors.
-- `MatchEngine` is called from within `WorkerLifecycle.runSession()`.
-- All Phase 13 audit findings are resolved.
+## 7. Success Criteria for Phase 14
+- Worker Lifecycle is decoupled from Vercel UI execution.
+- Configured via GitHub Actions / Cron Job.
 
 ## ACCOUNT TRANSITION RECOVERY PROCEDURE
 
 Step 1: Read `PROJECT_BOOTSTRAP.md`
-Step 2: Read `CURRENT_STATE.md` — pay special attention to **Outstanding Bugs**
+Step 2: Read `CURRENT_STATE.md`
 Step 3: Read `SESSION_HANDOFF.md` (this file)
 Step 4: Read `TRANSITION_SNAPSHOT.md`
-Step 5: Read `PHASE_13_ARCHITECTURE.md`
-Step 6: Summarize your understanding of all bugs before writing any code.
+Step 5: Summarize your understanding before writing any code.

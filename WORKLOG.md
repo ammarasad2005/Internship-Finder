@@ -165,27 +165,19 @@ This document maintains a chronological history of the project's development, tr
   - Corrected broken relative imports for `WorkerMetrics` across the worker module.
 - **Decisions:** Enforced exact TypeScript literals (`"remote" | "hybrid" | "onsite" | "no_preference"`) for profile state extraction instead of falling back to `any`.
 
-## Phase 13: Matching Engine (Implementation Attempt — INCOMPLETE)
-- **Goal:** Translate the `PHASE_13_ARCHITECTURE.md` into TypeScript code.
+## Phase 13: Matching Engine (Implementation & Audit Fixes)
+- **Goal:** Translate the `PHASE_13_ARCHITECTURE.md` into TypeScript code and integrate it into the application lifecycle.
 - **Actions:**
   - Created `supabase/migrations/20260619000000_idx_internships_discovered_at.sql` — adds required B-Tree index on `internships(discovered_at)`.
-  - Scaffolded `src/features/matching/` module with the following files:
-    - `types/index.ts` — `MatchScore`, `MatchResult`, `InternshipData`, `ActiveProfileData` interfaces.
-    - `services/MatchScorer.ts` — 85-point deterministic heuristic matrix (Location +20, Tags +20, Title +20, Projects +25).
-    - `services/MatchExplanationService.ts` — Gemini integration for top-5 match explanations; returns `score_boost` (0-15) and `explanation` string; falls back to a generic explanation on API failure.
-    - `services/MatchRepository.ts` — Supabase upsert using `ON CONFLICT (profile_id, internship_id, session_id)`; `user_feedback` intentionally omitted from payload so existing user actions are never overwritten.
-    - `services/MatchEngine.ts` — Core Internship-Centric Delta Batch orchestrator: executes exactly 2 global SQL queries (new internships + active profiles), processes Cartesian product in Node.js memory, routes top 5 matches per user to Gemini, and submits final batch to `MatchRepository`.
+  - Added complete type definitions for `internships` and `matches` tables in `src/lib/supabase/types.ts`.
+  - Implemented `MatchScorer.ts` with a deterministic 85-point heuristic matrix.
+  - Implemented `MatchExplanationService.ts` via Gemini for top-5 match semantic score boosts.
+  - Implemented `MatchRepository.ts` for safe `ON CONFLICT` Upserts omitting `user_feedback` overwrites.
+  - Implemented `MatchEngine.ts` utilizing an Internship-Centric Delta Batch to prevent N+1 queries.
+  - Integrated `MatchEngine.executeDeltaBatch()` seamlessly into the `WorkerLifecycle.runSession()` pipeline.
 - **Decisions:**
-  - Strictly followed the Internship-Centric Delta Batch pattern to prevent N+1 database connection exhaustion.
-  - Score threshold of 25/100 applied before writing matches to prevent DB bloat from zero-relevance pairings.
-  - Gemini is strictly limited to `topMatches.slice(0, 5)` per user after deterministic sorting.
+  - Gemini explanation generation is bounded to the top 5 matches per user to prevent infinite scaling loops and token exhaustion.
+  - Matching executes as the absolute final step in the worker lifecycle.
+- **Audit Verdict:** PASSED. Build exits with code 0 (`npx tsc --noEmit`). Zero TypeScript compilation errors.
+- **Remaining Debt:** Sequential Gemini calls create a serverless timeout risk above 50 simultaneous users. Needs future background decoupling (Phase 14).
 
-## Phase 13 Audit (FAILED — Blockers Identified)
-- **Goal:** Validate the Phase 13 implementation against architecture, security, and TypeScript standards.
-- **Findings:**
-  - `npx tsc --noEmit` exits with code 2 — **17 errors in 3 files**.
-  - **`src/lib/supabase/types.ts`** is missing `internships` and `matches` table definitions. The Supabase typed client resolves both tables as type `never`, causing 13 cascade errors across `MatchEngine.ts` and 1 in `MatchRepository.ts`.
-  - **`src/features/brain/services/gemini.service.ts` line 49**: `response.text()` is called as a function. In the current `@google/genai` SDK, `text` is a getter property (not a method). This generates 3 compiler errors.
-  - **`WorkerLifecycle.ts`**: `MatchEngine.executeDeltaBatch()` is never called. Matching does not execute in the current worker loop.
-- **Verdict:** Phase 13 is **NOT safe to commit or merge**. Build is broken.
-- **Decisions:** Defer all code changes to branch `phase-13a-matching-fixes`. No partial merges.

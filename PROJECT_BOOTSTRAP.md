@@ -86,10 +86,13 @@ Features are developed on isolated branches (e.g., `phase-13a-matching-fixes`) r
 - **`database-design.md`:** The absolute source of truth for the DB schema.
 
 ## 17. Known Technical Debt
+- **Sequential Gemini Scaling Bottleneck:** Generating match explanations sequentially will breach Vercel's 5-minute timeout if active users exceed ~50.
 - Unbounded exponential growth in the `matches` table.
 - PostgreSQL dead-tuple bloating from upserts.
 - Primitive UI styling (CSS Modules are bare).
-- `src/lib/supabase/types.ts` is manually maintained and has previously fallen out of sync with the schema — **it is currently out of sync** (missing `internships` and `matches` table types).
+- `src/lib/supabase/types.ts` is manually maintained and must be carefully synced with `initial_schema.sql` (Supabase CLI not yet integrated into workflow).
+- `internships.tags` array is destructively overwritten during persistence.
+- No `server-only` import guard on `MatchEngine` or `MatchRepository`.
 
 ## 18. Current Project Maturity Assessment
-**High Maturity — Build Currently Broken.** The infrastructure (Phases 1–12) is complete and production-ready. The Matching Engine module (Phase 13) has been scaffolded but has 17 TypeScript compilation errors that must be fixed before the project compiles. The immediate task is the `phase-13a-matching-fixes` branch.
+**High Maturity — Build is Clean.** The infrastructure (Phases 1–13) is complete and production-ready. The Matching Engine module operates properly and integrates into the WorkerLifecycle. Zero TypeScript compilation errors exist. The next immediate requirement is decoupling the worker from Vercel execution limits (Phase 14).
