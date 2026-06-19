@@ -14,6 +14,8 @@ This document is the ultimate continuity guide designed to perfectly restore pro
 - **Phase 9:** Content Extraction Engine (DOM Parsing, Candidate Validation).
 - **Phase 10:** Canonicalization & Deduplication (String normalizers, tri-factor hashing).
 - **Phase 11:** Persistence Pipeline (DB Upserts, Database Mapping, Provenance Tracking).
+- **Phase 12:** AI Research Brain Integration (Gemini, Zod strict schema parsing, caching).
+- **Phase 13 (Design):** Matching Engine Architecture & Scalability Audit.
 
 ## 2. Current Architecture
 - **Frontend:** Next.js App Router, CSS Modules (NO Tailwind), React Hook Form, Zod.
@@ -22,7 +24,7 @@ This document is the ultimate continuity guide designed to perfectly restore pro
 - **Data Flow:** UI `StartSession` -> `SearchWavePlanner` -> `ProviderRouter` -> `GoogleCSEProvider` -> Normalized `SearchResult[]`.
 
 ## 3. Current Branch
-`hotfix-persistence-application-url`
+`phase-13-matching-engine`
 
 ## 4. Most Recent Commits
 ```text
@@ -43,16 +45,17 @@ feat: implement canonicalization and deduplication engine
 6. **Persistence:** `InternshipPersistenceService` aggressively writes the unified models natively into Supabase via constrained Postgres upserts.
 
 ## 6. Remaining Roadmap
-- **Phase 12:** True AI Integration (Replacing deterministic `DomainExpansionService` with real Gemini logic).
-- **Phase 13:** GitHub Actions / Cron Job decoupling (Moving `WorkerLifecycle` off the Vercel UI thread).
-- **Phase 14:** Polish and UI completion.
+- **Phase 13 (Code):** Matching Engine Implementation (In-memory Internship-Centric Delta Batch).
+- **Phase 14:** GitHub Actions / Cron Job decoupling (Moving `WorkerLifecycle` off the Vercel UI thread).
+- **Phase 15:** Polish and UI completion.
 
 ## 7. Immediate Next Phase
-**Phase 12: True AI Integration.** 
-Wiring up the Google Gemini API to the `DomainExpansionService` and `QueryGenerationService`, and deploying it as a fallback extractor for the `ExtractionEngine`.
+**Phase 13: Matching Engine Implementation.** 
+Translate the `PHASE_13_ARCHITECTURE.md` into TypeScript. Build the `MatchEngine`, index the database, and wire up Gemini to generate semantic explanations for top-scoring matches.
 
 ## 8. Known Technical Debt
-- Mock services still active (`DomainExpansionService`, `QueryGenerationService`).
+- Unbounded `matches` table growth (needs 30-day TTL job in future).
+- PostgreSQL Dead Tuple bloat from `ON CONFLICT DO UPDATE`.
 - DB `tags` are currently destructively overwritten during persistence.
 - The UI is largely unstyled bare CSS Modules.
 

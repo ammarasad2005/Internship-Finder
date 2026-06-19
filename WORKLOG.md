@@ -145,3 +145,14 @@ This document maintains a chronological history of the project's development, tr
   - Hashed stringified, sorted arrays (`[...arr].sort()`) using `crypto.createHash('sha256')` to prevent cache collisions and guarantee deduplicated profile cache hits.
   - Built the `GeminiService` with an exponential backoff loop to survive 429s and timeouts.
   - If the API key is missing or validation critically fails, the code throws gracefully and the services instantaneously fall back to hardcoded dictionaries (the "Deterministic First" philosophy).
+
+## Phase 13: Matching Engine (Architecture & Audit)
+- **Goal:** Design the matching engine pipeline to evaluate internships against user profiles scaleably and safely.
+- **Actions:** 
+  - Authored `PHASE_13_ARCHITECTURE.md` mapping inputs, matching signals (0-100 score), AI generation layers, and batch processing strategies.
+  - Conducted a strict database scalability audit (`PHASE_13_DB_AUDIT.md`) identifying severe N+1 bottlenecks and missing indexes.
+  - Revised the architecture to mandate an **Internship-Centric Delta Batch** to eliminate thousands of network connections, evaluating all matches exclusively in Node.js memory.
+- **Decisions:** 
+  - Mandated a new B-Tree index on `discovered_at` for the `internships` table.
+  - Discarded complex SQL location trigram indexes in favor of purely in-memory evaluation.
+  - Deferred Match TTL retention policies and PostgreSQL dead-tuple vacuum optimizations to a future scaling sprint to maintain momentum.

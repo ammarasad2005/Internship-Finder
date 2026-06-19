@@ -27,7 +27,7 @@ export function ProfileReview({ state }: Props) {
         first_name: state.profile.first_name,
         last_name: state.profile.last_name,
         location_preference: state.profile.location_preference,
-        remote_preference: state.profile.remote_preference,
+        remote_preference: state.profile.remote_preference as "remote" | "hybrid" | "onsite" | "no_preference" | null | undefined,
         duration_preference: state.profile.duration_preference,
         paid_preference: state.profile.paid_preference,
         confidence_score: state.profile.confidence_score,

@@ -3,6 +3,7 @@ import { DomainExpansionService } from './domain-expansion.service';
 import { QueryGenerationService } from './query-generation.service';
 import { QueryRankingService } from './query-ranking.service';
 import { ResearchPlan } from '../types';
+import { createClient } from '@/lib/supabase/client';
 
 export class ResearchPlanBuilder {
   /**
@@ -16,14 +17,17 @@ export class ResearchPlanBuilder {
     const skills = profileData.skills.map((s: any) => s.skill_name);
     const projects = profileData.projects.map((p: any) => p.technologies ? p.technologies.join(' ') : p.project_name);
 
+    const supabase = createClient();
+    
     // 2. Domain Expansion
-    const expandedDomains = await DomainExpansionService.expandProfile(skills, projects);
+    const expandedDomains = await DomainExpansionService.expandProfile(skills, projects, supabase);
 
     // 3. Query Generation & Categorization
-    let queries = QueryGenerationService.generateQueries(
+    let queries = await QueryGenerationService.generateQueries(
       expandedDomains, 
       profileData.profile.location_preference,
-      profileData.profile.remote_preference
+      profileData.profile.remote_preference,
+      supabase
     );
 
     // 4. Query Ranking

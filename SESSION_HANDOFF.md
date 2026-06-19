@@ -21,14 +21,14 @@ Before you write *any* code or make an architectural decision, you MUST read the
 5. `CURRENT_STATE.md` (Where the project is right now)
 
 ## 4. Current Status
-We have completed Phase 12. The deterministic infrastructure and the intelligent "Brain" are now successfully merged. The system uses `@google/genai` to dynamically map user profiles to structured domain dictionaries and search queries, automatically caching the results locally in Supabase to eliminate repetitive API spend.
+We have completed Phase 12 (AI Brain Integration) and successfully audited the architecture for Phase 13 (Matching Engine). The architecture dictates an **Internship-Centric Delta Batch** to prevent N+1 query limits, shifting all location string matching and array intersection logic entirely into Node.js memory.
 
 ## 5. Exact Next Development Objective
-Your immediate objective should be negotiating **Phase 13: GitHub Actions / Cron Job Decoupling**.
-This means moving the execution context of the `WorkerLifecycle` off of Vercel and onto an independent background worker.
-- Set up a GitHub Actions workflow that executes the worker via a `curl` call to an authenticated Next.js API route or runs a raw Node script.
-- Ensure telemetry and WebSockets still correctly propagate updates to the UI while running in the background.
+Your immediate objective should be negotiating **Phase 13: Matching Engine (Implementation)**.
+- Step 1: Generate a Supabase migration to add a B-Tree index to `internships(discovered_at)`.
+- Step 2: Create the `MatchEngine`, `MatchScorer`, and `MatchRepository` using the defined 100-point heuristic weighting logic.
+- Step 3: Integrate Gemini for generating personalized `explanation` columns for the top 5 matches per user.
 
-**DO NOT** rewrite the infrastructure. **PLUG IN** to the existing `SearchProvider` interfaces and `WorkerLifecycle`.
+**DO NOT** write per-user SQL queries. Fetch all new internships once globally, fetch active users once, and evaluate the Cartesian product directly in memory.
 
 Good luck!

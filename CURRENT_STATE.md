@@ -1,10 +1,10 @@
 # Current State: Internship Finder
 
-**Last Updated:** Phase 12 Completion
+**Last Updated:** Phase 13 Architecture & Scalability Audit
 
 ## 1. Codebase Status
-- **Current Git Branch:** `phase-12-ai-research-brain`
-- **Application Status:** The infrastructure layer is 100% complete. The worker pipeline now successfully executes raw queries, deterministically extracts DOM payloads, securely canonicalizes candidates, and successfully persists unified records to the Supabase database. The "Brain" has now successfully integrated Google Gemini for domain expansion and query generation, backed by a persistent global cache.
+- **Current Git Branch:** `phase-13-matching-engine`
+- **Application Status:** The infrastructure layer is 100% complete. The "Brain" integrates Google Gemini for domain expansion and query generation. The Phase 13 Matching Engine architecture and database scalability audit are complete, dictating an in-memory Internship-Centric Delta Batch to safely avoid N+1 networking limits.
 
 ## 2. Implemented Systems
 - Next.js 15 App Router Architecture with `src/features/` module separation.
@@ -23,7 +23,8 @@ The following systems currently use mocked stubs and require actual integration 
 - **CSS Styling:** The project utilizes very bare CSS Modules. Polishing the aesthetic (Glassmorphism, animations) as defined in `.rules` is heavily pending.
 - **TypeScript Generation:** `types.ts` was manually crafted for existing features. If the schema updates, the developer must either run the Supabase CLI generator or manually sync the interfaces.
 - **Tags Overwrite:** `internships.tags` array is destructively overwritten during DB upserts instead of cleanly merged.
+- **Matches Table Bloat (Deferred):** An unbounded `matches` table will grow exponentially. Implementation of a 30-day TTL deletion strategy is deferred to a future scaling sprint.
 
 ## 5. Next Planned Phase
-**Phase 13: GitHub Actions / Cron Job Decoupling**
-The worker pipeline is currently tied to Next.js UI execution. The next critical architectural step is fully decoupling the `WorkerLifecycle` from the UI thread and deploying it as an autonomous background chron job (e.g., via GitHub Actions) to circumvent Vercel free-tier timeouts.
+**Phase 13: Matching Engine (Implementation)**
+The architecture for Phase 13 is complete. The next step is writing the code to implement the Internship-Centric Delta Batch, indexing `discovered_at`, heuristic scoring, and the top-5 Gemini explanation generator.

@@ -1,5 +1,6 @@
 import { SearchQuery } from '@/features/brain/types';
-import { SearchWave, ExecutableTask, WorkerMetrics } from '@/features/discovery/types';
+import { SearchWave, ExecutableTask } from '@/features/discovery/types';
+import { WorkerMetrics } from '@/features/worker/types';
 import { ProviderRegistry } from '@/features/discovery/services/provider-registry.service';
 import { ProviderRouter } from '@/features/discovery/services/provider-router.service';
 import { SessionService } from '@/features/research/services/session.service';
