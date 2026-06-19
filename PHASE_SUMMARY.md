@@ -17,23 +17,22 @@ This document is the ultimate continuity guide designed to perfectly restore pro
 - **Phase 12:** AI Research Brain Integration (Gemini, Zod strict schema parsing, caching).
 - **Hotfix:** Async Integration & TypeScript Fixes (Resolving IDE compilation errors).
 - **Phase 13:** Matching Engine Architecture, Implementation & Scalability Audit.
+- **Phase 14:** Recommendation UI & Match Feedback Loop (Server Page `/dashboard/sessions/[id]/matches`, Server Actions, interactive components, performance indexes).
 
 ## 2. Current Architecture
 - **Frontend:** Next.js App Router, CSS Modules (NO Tailwind), React Hook Form, Zod.
 - **Backend/DB:** Supabase (PostgreSQL) with strict Row Level Security.
 - **Execution Model:** Vercel manages UI and state. Asynchronous "Worker" layer executes long-running search scraping and AI prompts independently.
-- **Data Flow:** UI `StartSession` -> `SearchWavePlanner` -> `ProviderRouter` -> `GoogleCSEProvider` -> Normalized `SearchResult[]`.
+- **Data Flow:** UI `StartSession` -> `SearchWavePlanner` -> `ProviderRouter` -> `GoogleCSEProvider` -> Normalized `SearchResult[]` -> Extraction -> Canonicalization -> Persistence -> MatchEngine -> Student UI (Matches Page + Feedback Loop).
 
 ## 3. Current Branch
-`phase-13a-matching-fixes` (until merged)
+`phase-14-recommendation-ui` (until merged)
 
 ## 4. Most Recent Commits
 ```text
-6d6cf46 (HEAD -> phase-13a-matching-fixes, phase-13-matching-engine) docs: prepare project continuity and account transition handoff
-ade8d26 docs: final handoff before account transition
-53e2edd docs: update continuity after phase 13 architecture review
-b02e153 docs: refine phase 13 architecture after scalability audit
-d8fbd99 (phase-12-ai-research-brain) docs: update continuity after phase 12
+3c6670e (HEAD -> phase-14-recommendation-ui) feat: complete phase 14 recommendation ui
+820922a feat: partial phase 14 recommendation ui implementation
+c10a06d docs: update continuity after phase 13 completion
 ```
 
 ## 5. Current Execution Flow
@@ -44,15 +43,15 @@ d8fbd99 (phase-12-ai-research-brain) docs: update continuity after phase 12
 5. **Deduplication:** `DeduplicationEngine` safely collapses identical listings from multiple domains into single `CanonicalInternship` objects utilizing strict tri-factor hashing.
 6. **Persistence:** `InternshipPersistenceService` aggressively writes the unified models natively into Supabase via constrained Postgres upserts.
 7. **Matching:** `MatchEngine.executeDeltaBatch()` executes at the tail end of the worker loop. It performs an Internship-Centric Delta Batch evaluation inside Node.js memory, generating Semantic score boosts via Gemini for the top 5 matches per user before committing to Supabase.
+8. **Feedback:** Student reviews matches at `/dashboard/sessions/[id]/matches` and provides actions (Save/Apply/Reject) that write back to `matches.user_feedback` via Optimistic UI + Server Actions.
 
 ## 6. Remaining Roadmap
-- **Phase 14:** Recommendation UI + Match Feedback Loop (expose matches to users, allow saved/applied/rejected feedback).
-- **Phase 15:** Background Scheduling / Cron Job Decoupling (move WorkerLifecycle off Vercel UI thread).
+- **Phase 15:** Background Scheduling & Worker Decoupling (move WorkerLifecycle off Vercel UI thread to cron/actions).
 - **Phase 16:** Notifications (alert users when new matches arrive via Supabase Edge Functions).
 - **Phase 17:** UI Polish & Glassmorphism.
 
 ## 7. Immediate Next Phase
-**Phase 14: Recommendation UI + Match Feedback Loop**
+**Phase 15: Background Scheduling & Worker Decoupling**
 See: `PHASE_14_ARCHITECTURE.md`
 
 ## 8. Known Technical Debt

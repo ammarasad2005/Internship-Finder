@@ -1,10 +1,10 @@
 # Current State: Internship Finder
 
-**Last Updated:** Phase 13 Implementation & Audit Fixes (PASSED)
+**Last Updated:** Phase 14 Recommendation UI & Match Feedback Loop (PASSED)
 
 ## 1. Codebase Status
-- **Current Git Branch:** `phase-13a-matching-fixes` (until merged)
-- **Application Status:** Phase 13 Matching Engine code has been implemented, integrated, and audited. The TypeScript compiler (`npx tsc --noEmit`) exits with code 0. The project compiles cleanly and is fully functional at current scale.
+- **Current Git Branch:** `phase-14-recommendation-ui` (until merged)
+- **Application Status:** Phase 14 Recommendation UI & Match Feedback Loop has been implemented, integrated, and audited. The matching engine's recommendations are now fully visible to users via a dedicated UI page, and they can provide persistent feedback. The TypeScript compiler (`npx tsc --noEmit`) exits with 0 errors.
 
 ## 2. Implemented Systems (Production-Ready)
 - Next.js 15 App Router Architecture with `src/features/` module separation.
@@ -14,28 +14,30 @@
 - Research Brain Pipeline (Domain Expansion -> Query Generation -> Query Ranking -> Plan Building).
 - Worker Node Foundation (Lifecycle -> Executor -> Retry Logic -> Cost Tracking).
 - Content Extraction & Canonicalization Pipeline.
-- **Phase 13 Matching Engine:** `MatchScorer`, `MatchExplanationService`, `MatchRepository`, `MatchEngine`.
-- **MatchEngine Integration:** Fully integrated into `WorkerLifecycle.runSession()`.
-- **Database Scalability:** `discovered_at` B-Tree index added to support the Internship-Centric Delta Batch fetching strategy.
-- **AI Matching Explanation:** Gemini 2.5 flash integration properly evaluates the top 5 matches per user, returning strict Zod JSON payloads.
+- **Phase 13 Matching Engine:** `MatchScorer`, `MatchExplanationService`, `MatchRepository`, `MatchEngine` integrated into `WorkerLifecycle.runSession()`.
+- **Phase 14 UI & Feedback Loop:** 
+  - Server Action `recordMatchFeedback` inside `feedback.action.ts` for student feedback updates (`applied`, `saved`, `rejected`).
+  - Next.js Server Page route `/dashboard/sessions/[id]/matches` displaying matched internships.
+  - Interactive UI components (`MatchCard`, `FeedbackButtons`, `ScoreBar`, `TagList`, `MatchListHeader`) with CSS Modules styling, optimistic UI states, and responsive undo actions.
+  - Performance indexes (`idx_matches_session_profile` and `idx_matches_semantic_score`) to accelerate sorting and reading matches.
+  - Session Detail page (`SessionDetail.tsx`) updated to link directly to recommendations on completion.
 
 ## 3. Deferred Systems & Mocks
 - **`QueryRankingService`**: Still mocked, returns priority 0 for all queries.
 - **GitHub Actions Runner**: Worker is still synchronously invoked via UI for testing.
 
 ## 4. Known Technical Debt & Risks
-- **Sequential Gemini Scaling Bottleneck (High Risk):** Gemini explanation calls inside `MatchEngine.ts` are processed sequentially within a `for` loop. This will hit Vercel 5-minute timeout limits if user load exceeds ~50 active simultaneous users. Requires batching/parallelization or decoupled background queuing.
-- **CSS Styling:** Bare CSS Modules. Glassmorphism/animation polish heavily pending.
-- **TypeScript Types Drift:** `types.ts` was manually crafted and must be manually updated or regenerated via the Supabase CLI.
+- **Sequential Gemini Scaling Bottleneck (High Risk):** Gemini explanation calls inside `MatchEngine.ts` are processed sequentially within a `for` loop. This will hit Vercel 5-minute timeout limits if user load exceeds ~50 active simultaneous users. Deferring parallelization / background queuing to Phase 15.
+- **CSS Styling:** Bare CSS Modules. Needs a general layout / design polish.
+- **TypeScript Types Drift:** `types.ts` is manually maintained and must be carefully synced with the schema.
 - **Tags Overwrite:** `internships.tags` array is destructively overwritten during DB upserts.
 - **Matches Table Bloat:** No 30-day TTL deletion strategy. Will grow unbounded in production.
 - **Missing Import Guards:** No `server-only` import guard protecting `MatchEngine` and `MatchRepository` from accidental frontend bundle inclusion.
 
 ## 5. Immediate Next Phase
-**Phase 14: Recommendation UI + Match Feedback Loop**
+**Phase 15: Background Scheduling & Worker Decoupling**
 
-See `PHASE_14_ARCHITECTURE.md` for full design.
+The matches UI is now live. We must decouple the `WorkerLifecycle` execution from the synchronous Next.js request thread to eliminate serverless timeout limits as concurrency grows.
 
-Branch to create: `phase-14-recommendation-ui`
+See `NEXT_PHASE.md` for planning.
 
-The Phase 13 Matching Engine is now fully operational but invisible to end-users. Phase 14 exposes this engine's output through a dedicated matches UI and implements the `user_feedback` collection flow (`applied`, `saved`, `rejected`).

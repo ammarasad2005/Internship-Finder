@@ -21,17 +21,18 @@ Before you write *any* code or make an architectural decision, you MUST read the
 5. `CURRENT_STATE.md` (Where the project is right now — including all known bugs)
 
 ## 4. Current Status
-Phase 13 Matching Engine code has been implemented, integrated, and audited. The build is perfectly clean with zero TypeScript errors. The `MatchEngine` has been wired into `WorkerLifecycle.runSession()`.
+Phase 14 (Recommendation UI & Match Feedback Loop) is fully implemented, verified, and audited with success. The `/dashboard/sessions/[id]/matches` route handles recommendation lists, and `feedback.action.ts` handles user action persistence securely. The build is clean (`npx tsc --noEmit` exits with 0 errors).
 
 ## 5. Outstanding Bugs — Fix These First
-*There are no critical compilation or runtime blockers at this time.*
+*There are no compilation or runtime blockers at this time.*
 
 ## 6. Next Development Branch
-`phase-13a-matching-fixes` remains active until merged, after which we will branch to `phase-14-worker-decoupling`.
+`phase-14-recommendation-ui` remains active until merged, after which we will branch to `phase-15-worker-decoupling`.
 
-## 7. Success Criteria for Phase 14
-- Worker Lifecycle is decoupled from Vercel UI execution.
-- Configured via GitHub Actions / Cron Job.
+## 7. Success Criteria for Phase 15
+- Decouple the `WorkerLifecycle` execution from the frontend Next.js request thread.
+- Establish background run triggers (e.g. GitHub Actions, Vercel Cron, or a Postgres trigger/PG_CRON configuration) to execute background search runs and match generation.
+- Remove the synchronous timeout risk from Vercel deployments.
 
 ## ACCOUNT TRANSITION RECOVERY PROCEDURE
 
@@ -40,3 +41,4 @@ Step 2: Read `CURRENT_STATE.md`
 Step 3: Read `SESSION_HANDOFF.md` (this file)
 Step 4: Read `TRANSITION_SNAPSHOT.md`
 Step 5: Summarize your understanding before writing any code.
+
