@@ -86,14 +86,13 @@ Features are developed on isolated branches (e.g., `phase-13a-matching-fixes`) r
 - **`database-design.md`:** The absolute source of truth for the DB schema.
 
 ## 17. Known Technical Debt
-- **Sequential Gemini Scaling Bottleneck:** Generating match explanations sequentially will breach Vercel's 5-minute timeout if active users exceed ~50.
+- **Sequential Gemini Scaling Bottleneck:** Explanation generation is executed sequentially. While moving execution to GitHub Actions eliminates Next.js/Vercel timeout limits, it still consumes excessive GHA runner minutes. Needs parallelization/batching.
 - Unbounded exponential growth in the `matches` table.
 - PostgreSQL dead-tuple bloating from upserts.
 - Primitive UI styling (CSS Modules are bare).
 - `src/lib/supabase/types.ts` is manually maintained and must be carefully synced with `initial_schema.sql` (Supabase CLI not yet integrated into workflow).
 - `internships.tags` array is destructively overwritten during persistence.
-- No `server-only` import guard on `MatchEngine` or `MatchRepository`.
 
 ## 18. Current Project Maturity Assessment
-**High Maturity — Build is Clean.** The infrastructure (Phases 1–14) is complete and production-ready. The Matching Engine backend acts on scraped data, and recommendations are exposed via `/dashboard/sessions/[id]/matches` to students. Zero TypeScript compilation errors exist. The next immediate requirement is decoupling the worker execution from Vercel timeout limits (Phase 15).
+**High Maturity — Build is Clean.** The infrastructure (Phases 1–15) is complete and production-ready. The background worker crawls and scores matches offline in GitHub Actions, triggered dynamically by Next.js API requests. Zero TypeScript compilation errors exist. The next immediate requirement is implementing user alerts and notification dispatches (Phase 16).
 

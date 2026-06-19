@@ -1,20 +1,20 @@
 # Transition Snapshot
 
 **Date:** June 19, 2026
-**Current Active Branch:** `phase-14-recommendation-ui`
-**Next Required Branch:** `phase-15-worker-decoupling`
+**Current Active Branch:** `phase-15-planning`
+**Next Required Branch:** `phase-16-notifications`
 
 This is a point-in-time architectural snapshot created explicitly to preserve context during an AI account transition.
 
 ## 1. Last Completed Work
-- **Last Completed Phase:** Phase 14 (Recommendation UI & Match Feedback Loop).
-- **Phase 14 Code Status:** COMPLETE. Audit Passed.
-- **Last Committed Purpose:** Implement matches view page, interactive feedback tracking components, composite indexing, and wire complete page access control flow.
+- **Last Completed Phase:** Phase 15 (Background Scheduling & Worker Decoupling).
+- **Phase 15 Code Status:** COMPLETE. Audit Passed.
+- **Last Committed Purpose:** Decouple the long-running crawler/matching engine from Next.js onto a GitHub Actions runner, implementing the `/api/sessions/trigger` dispatch endpoint, standalone CLI node runner `src/scripts/run-worker.ts` via tsx, and server-only compile-time guards with path-mapping mocks.
 
 ## 2. Current Repository Health
 - **Build Status:** ✅ CLEAN — `npx tsc --noEmit` exits with code 0.
 - **TypeScript Errors:** 0
-- **Integrations:** Supabase local development synchronized with migrations. UI links completed session details directly to matches list at `/dashboard/sessions/[id]/matches`. Feedback updates are verified and fully operational.
+- **Integrations:** Next.js UI is fully decoupled from crawler execution. Clicking "Start Discovery" calls the API trigger endpoint, which fires a GitHub repository_dispatch event, executing the worker asynchronously. Supabase Realtime reflects session status updates back to the client.
 
 ## 3. Outstanding Issues
 
@@ -22,27 +22,26 @@ This is a point-in-time architectural snapshot created explicitly to preserve co
 *None.*
 
 ### Deferred Technical Debt
-- **Sequential Gemini Scaling Bottleneck:** Generating match explanations sequentially will breach Vercel's 5-minute timeout if active users exceed ~50. Priority item for Phase 15.
+- **Sequential Gemini Scaling Bottleneck:** Generating match explanations sequentially still consumes GHA runner minutes. Needs future parallelization.
 - **matches TTL Cleanup:** The `matches` table has no 30-day Time-To-Live (TTL) deletion job.
 - **CSS Modules:** UI styling is base layout CSS Modules and needs polish.
 - **Tags Overwrite:** `internships.tags` array is destructively overwritten during persistence upserts.
-- **Server-Only Guards:** No `server-only` import guard on `MatchEngine` or `MatchRepository`.
 - **Types Drift:** `types.ts` is manually maintained and must be carefully synced with the schema.
 
 ## 4. Risks & Blockers
 - **Current Blockers:** None.
-- **Current Risks:** Timeout risks on Vercel deployments when more than 50 concurrent matching sessions run due to synchronous worker execution.
+- **Current Risks:** API/Dispatch dependency on GitHub API availability. If GitHub API is down, the dispatch trigger fails (handled gracefully via HTTP 500 response and transaction rollback status).
 
 ## 5. Architecture State
 
 ### What is Implemented & Production-Ready
 - Next.js 15 App Router & SSR Authentication.
 - Supabase PostgreSQL schema with RLS active on all tables.
-- Composite indices `idx_matches_session_profile` and `idx_matches_semantic_score` for fast matches query and sort.
-- Background worker execution loop (heartbeats, budget tracking, CSE provider, fetchers).
-- Content extraction & deduplication normalizers.
-- Memory-bounded MatchEngine matching delta batches.
-- **Matches Page & Feedbacks:** Interactive dashboard and actions allowing saving, marking applied, and rejecting recommendations.
+- Background worker execution loop running in GitHub Actions triggered via API dispatch.
+- Standalone runner script `src/scripts/run-worker.ts` executed via `tsx` with server-only mock path overrides.
+- Client UI bundle completely decoupled from server-side dependencies.
+- Matching Engine and normalizers/crawlers fully migrated to GHA runner.
+- Matches Page recommendation cards and action logging (Save, Apply, Reject).
 
 ### What is Scaffolded But Broken
 *None.*
@@ -51,8 +50,8 @@ This is a point-in-time architectural snapshot created explicitly to preserve co
 - `QueryRankingService` (Currently returns priority score 0 for everything).
 
 ### What Still Requires Implementation
-- **Phase 15:** Decoupling worker background thread and triggering it via GitHub API dispatches.
-- **Phase 16:** Notification systems.
+- **Phase 16:** Notification systems (alert users when new matches are generated).
+- **Phase 17:** UI/UX Polish.
 
 ---
 
@@ -64,8 +63,8 @@ This is a point-in-time architectural snapshot created explicitly to preserve co
 
 **Step 2:** Merge `phase-15-planning` into the main branch.
 
-**Step 3:** Checkout or create branch `phase-15-worker-decoupling`.
+**Step 3:** Checkout or create branch `phase-16-notifications`.
 
-**Step 4:** Begin implementing the background runner trigger API, CLI runner script, and Actions workflow configuration per `PHASE_15_ARCHITECTURE.md`.
+**Step 4:** Begin implementing database updates (`email_notifications_enabled`), settings UI toggles, the notification dispatcher, and transaction email client wrapper (Resend/Mailgun).
 
 

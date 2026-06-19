@@ -18,6 +18,8 @@ This document is the ultimate continuity guide designed to perfectly restore pro
 - **Hotfix:** Async Integration & TypeScript Fixes (Resolving IDE compilation errors).
 - **Phase 13:** Matching Engine Architecture, Implementation & Scalability Audit.
 - **Phase 14:** Recommendation UI & Match Feedback Loop (Server Page `/dashboard/sessions/[id]/matches`, Server Actions, interactive components, performance indexes).
+- **Phase 15:** Background Scheduling & Worker Decoupling (decoupling WorkerLifecycle off Vercel UI thread to GitHub Actions using Repository Dispatches, standalone CLI script via tsx runner, and server-only compile-time guards).
+
 
 ## 2. Current Architecture
 - **Frontend:** Next.js App Router, CSS Modules (NO Tailwind), React Hook Form, Zod.
@@ -30,38 +32,38 @@ This document is the ultimate continuity guide designed to perfectly restore pro
 
 ## 4. Most Recent Commits
 ```text
-ed1b0c0 (HEAD -> phase-15-planning) docs: update continuity after phase 14 completion
+e0112f9 (HEAD -> phase-15-planning) feat: implement phase 15 worker decoupling
+ed1b0c0 docs: update continuity after phase 14 completion
 3c6670e feat: complete phase 14 recommendation ui
-820922a feat: partial phase 14 recommendation ui implementation
 ```
 
 ## 5. Current Execution Flow
-1. **Planning:** `SearchWavePlanner` translates a user's `ResearchPlan` into a budgeted, deduplicated, and categorically diverse `SearchWave`.
-2. **Routing:** `ProviderRouter` maps query intents to healthy search engines while checking daily API quotas.
-3. **Execution:** `ResearchExecutor` calls the provider and returns raw URLs.
-4. **Extraction:** `ExtractionEngine` fetches HTML DOMs, scrapes them deterministically, and validates them into `InternshipCandidate` payloads.
-5. **Deduplication:** `DeduplicationEngine` safely collapses identical listings from multiple domains into single `CanonicalInternship` objects utilizing strict tri-factor hashing.
-6. **Persistence:** `InternshipPersistenceService` aggressively writes the unified models natively into Supabase via constrained Postgres upserts.
-7. **Matching:** `MatchEngine.executeDeltaBatch()` executes at the tail end of the worker loop. It performs an Internship-Centric Delta Batch evaluation inside Node.js memory, generating Semantic score boosts via Gemini for the top 5 matches per user before committing to Supabase.
-8. **Feedback:** Student reviews matches at `/dashboard/sessions/[id]/matches` and provides actions (Save/Apply/Reject) that write back to `matches.user_feedback` via Optimistic UI + Server Actions.
+0. **Triggering:** UI triggers research session via POST request to `/api/sessions/trigger`. The API endpoint authorizes the request, writes session state `pending` to Supabase, and dispatches a `trigger-worker` repository dispatch event to GitHub Actions.
+1. **Runner Instantiation:** GitHub Actions spawns the background worker workflow, clones the repo, and runs `npx tsx src/scripts/run-worker.ts` which uses a service role client to lock the session and set status to `crawling`.
+2. **Planning:** `SearchWavePlanner` translates a user's `ResearchPlan` into a budgeted, deduplicated, and categorically diverse `SearchWave`.
+3. **Routing:** `ProviderRouter` maps query intents to healthy search engines while checking daily API quotas.
+4. **Execution:** `ResearchExecutor` calls the provider and returns raw URLs.
+5. **Extraction:** `ExtractionEngine` fetches HTML DOMs, scrapes them deterministically, and validates them into `InternshipCandidate` payloads.
+6. **Deduplication:** `DeduplicationEngine` safely collapses identical listings from multiple domains into single `CanonicalInternship` objects utilizing strict tri-factor hashing.
+7. **Persistence:** `InternshipPersistenceService` aggressively writes the unified models natively into Supabase via constrained Postgres upserts.
+8. **Matching:** `MatchEngine.executeDeltaBatch()` executes at the tail end of the worker loop. It performs an Internship-Centric Delta Batch evaluation inside Node.js memory, generating Semantic score boosts via Gemini for the top 5 matches per user before committing to Supabase.
+9. **Feedback:** Student reviews matches at `/dashboard/sessions/[id]/matches` and provides actions (Save/Apply/Reject) that write back to `matches.user_feedback` via Optimistic UI + Server Actions.
 
 ## 6. Remaining Roadmap
-- **Phase 15:** Background Scheduling & Worker Decoupling (move WorkerLifecycle off Vercel UI thread to cron/actions).
-- **Phase 16:** Notifications (alert users when new matches arrive via Supabase Edge Functions).
+- **Phase 16:** Notifications (alert users when new matches arrive via Supabase Edge Functions or Database Triggers).
 - **Phase 17:** UI Polish & Glassmorphism.
 
 ## 7. Immediate Next Phase
-**Phase 15: Background Scheduling & Worker Decoupling**
-See: `PHASE_15_ARCHITECTURE.md`
+**Phase 16: Notifications**
+See: `NEXT_PHASE.md`
 
 ## 8. Known Technical Debt
-- **Sequential Gemini Scaling Bottleneck:** Explanation generation will exceed Vercel 5-minute timeouts if active users exceed ~50.
+- **Sequential Gemini Scaling Bottleneck:** Explanation generation is executed sequentially. While moving execution to GitHub Actions eliminates Next.js/Vercel timeout limits, it still consumes excessive GHA runner minutes. Needs parallelization/batching.
 - Unbounded `matches` table growth (needs 30-day TTL job in future).
 - PostgreSQL Dead Tuple bloat from `ON CONFLICT DO UPDATE`.
 - DB `tags` are currently destructively overwritten during persistence.
 - The UI is largely unstyled bare CSS Modules.
 - `types.ts` must be kept in manual sync with `initial_schema.sql` (Supabase CLI not yet integrated into workflow).
-- No `server-only` import guard on `MatchEngine` / `MatchRepository`.
 
 ## 9. Important Architectural Decisions
 - **No TailwindCSS.** Custom aesthetic styling using CSS Modules only.
