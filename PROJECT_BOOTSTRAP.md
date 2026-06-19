@@ -19,7 +19,7 @@ Internship Finder is a highly autonomous, low-cost pipeline designed to discover
 - **Frontend:** Next.js 15 App Router (`src/app/`), React Hook Form, Zod.
 - **Backend/DB:** Supabase PostgreSQL with strict Row Level Security (RLS) and WebSockets for real-time UI updates.
 - **Worker:** A Node.js background pipeline orchestrating discovery, extraction, and persistence.
-- **Modular Structure:** Code is grouped strictly by domain in `src/features/` (e.g., `auth`, `onboarding`, `brain`, `worker`, `canonicalization`).
+- **Modular Structure:** Code is grouped strictly by domain in `src/features/` (e.g., `auth`, `onboarding`, `brain`, `worker`, `canonicalization`, `matching`).
 
 ## 5. Tech Stack
 - Next.js (App Router)
@@ -46,8 +46,8 @@ A resilient background process that executes `SearchWaves`. It implements:
 
 ## 8. AI Strategy
 Google Gemini 2.5 is integrated using strict Zod JSON schemas.
-- **Current usage:** Domain Expansion, Query Generation.
-- **Future usage:** Matching Explanations, Implicit Skill Extraction.
+- **Current usage:** Domain Expansion, Query Generation, Match Explanation.
+- **Future usage:** Implicit Skill Extraction, Cover Letter Generation.
 - **Resilience:** If Gemini fails, the system instantly triggers deterministic, hardcoded fallback arrays without crashing.
 
 ## 9. Search Strategy
@@ -63,6 +63,7 @@ To avoid an N x M performance collapse, the engine performs "Internship-Centric 
 - **Do not modify `initial_schema.sql` without resetting the local Supabase DB.**
 - **Do not use Tailwind CSS.**
 - **Do not use `fs` or native Node modules in Next.js edge-rendered components.**
+- **Do not modify `src/lib/supabase/types.ts` without reflecting all changes in `initial_schema.sql` — these must stay in sync.**
 
 ## 13. Key Design Decisions
 - `application_url` is natively nullable because scraped sites often hide the real link.
@@ -73,11 +74,11 @@ To avoid an N x M performance collapse, the engine performs "Internship-Centric 
 - Do not plan without updating continuity documents (`WORKLOG.md`, `CURRENT_STATE.md`, `SESSION_HANDOFF.md`, `PHASE_SUMMARY.md`, `NEXT_PHASE.md`).
 
 ## 15. Branching Strategy
-Features are developed on isolated branches (e.g., `phase-13-matching-engine`) representing distinct architectural phases.
+Features are developed on isolated branches (e.g., `phase-13a-matching-fixes`) representing distinct architectural phases.
 
 ## 16. Documentation Map
 - **This File:** General Onboarding.
-- **`CURRENT_STATE.md`:** What exists right now.
+- **`CURRENT_STATE.md`:** What exists right now — including all known bugs and compile errors.
 - **`WORKLOG.md`:** The chronological history of all decisions.
 - **`PHASE_SUMMARY.md`:** The macro roadmap.
 - **`SESSION_HANDOFF.md`:** Context for the immediate next development session.
@@ -88,6 +89,7 @@ Features are developed on isolated branches (e.g., `phase-13-matching-engine`) r
 - Unbounded exponential growth in the `matches` table.
 - PostgreSQL dead-tuple bloating from upserts.
 - Primitive UI styling (CSS Modules are bare).
+- `src/lib/supabase/types.ts` is manually maintained and has previously fallen out of sync with the schema — **it is currently out of sync** (missing `internships` and `matches` table types).
 
 ## 18. Current Project Maturity Assessment
-**High Maturity.** The infrastructure is complete. The system can successfully map user intent to the database, dispatch resilient workers, scrape the internet, canonicalize candidates, bypass Gemini failures, and persist to PostgreSQL natively. The project is currently staged perfectly to build the final Matching Engine layer.
+**High Maturity — Build Currently Broken.** The infrastructure (Phases 1–12) is complete and production-ready. The Matching Engine module (Phase 13) has been scaffolded but has 17 TypeScript compilation errors that must be fixed before the project compiles. The immediate task is the `phase-13a-matching-fixes` branch.

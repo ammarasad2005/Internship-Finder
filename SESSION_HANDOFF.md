@@ -10,7 +10,7 @@
 ## 2. Architecture Summary
 - **Frontend:** Next.js App Router (`src/app/`), React Hook Form, Zod.
 - **Backend/DB:** Supabase (PostgreSQL), strictly enforced with Row Level Security (RLS).
-- **Structure:** Feature-based folder architecture (`src/features/auth`, `src/features/onboarding`, `src/features/brain`, `src/features/worker`).
+- **Structure:** Feature-based folder architecture (`src/features/auth`, `src/features/onboarding`, `src/features/brain`, `src/features/worker`, `src/features/matching`).
 
 ## 3. Mandatory Read Order
 Before you write *any* code or make an architectural decision, you MUST read the following files in this exact sequence:
@@ -18,17 +18,41 @@ Before you write *any* code or make an architectural decision, you MUST read the
 2. `project-context.md` (Product vision and end-user flow)
 3. `agents.md` (Execution philosophy and component isolation)
 4. `database-design.md` (The source of truth for all data relationships)
-5. `CURRENT_STATE.md` (Where the project is right now)
+5. `CURRENT_STATE.md` (Where the project is right now — including all known bugs)
 
 ## 4. Current Status
-We have completed Phase 12 (AI Brain Integration), successfully audited the architecture for Phase 13 (Matching Engine), and resolved all outstanding async integration and TypeScript compilation issues. The architecture dictates an **Internship-Centric Delta Batch** to prevent N+1 query limits, shifting all location string matching and array intersection logic entirely into Node.js memory.
+Phase 13 Matching Engine code has been **written but the project does NOT compile cleanly**. A TypeScript audit produced 17 errors. The build is BROKEN. You must fix these before any further implementation.
 
-## 5. Exact Next Development Objective
-Your immediate objective should be negotiating **Phase 13: Matching Engine (Implementation)**.
-- Step 1: Generate a Supabase migration to add a B-Tree index to `internships(discovered_at)`.
-- Step 2: Create the `MatchEngine`, `MatchScorer`, and `MatchRepository` using the defined 100-point heuristic weighting logic.
-- Step 3: Integrate Gemini for generating personalized `explanation` columns for the top 5 matches per user.
+## 5. Outstanding Bugs — Fix These First
 
-**DO NOT** write per-user SQL queries. Fetch all new internships once globally, fetch active users once, and evaluate the Cartesian product directly in memory.
+### Bug 1: Missing internships + matches table types (BLOCKER)
+**File:** `src/lib/supabase/types.ts`
+**Problem:** The `Database` interface is missing the `internships` and `matches` table definitions. The Supabase client resolves these tables as type `never`, causing 14 compiler errors in `MatchEngine.ts` and `MatchRepository.ts`.
+**Fix:** Add `internships` and `matches` table Row/Insert/Update type blocks to the `Tables` property of the `Database` interface. Reference `initial_schema.sql` for the authoritative column list.
 
-Good luck!
+### Bug 2: Gemini SDK incompatibility (BLOCKER)
+**File:** `src/features/brain/services/gemini.service.ts`, line 49
+**Problem:** `response.text()` is called as a function. In the current `@google/genai` SDK, `text` is a getter property, not a method.
+**Fix:** Change `response.text()` to `response.text`.
+
+### Bug 3: MatchEngine not wired into WorkerLifecycle (INTEGRATION MISSING)
+**File:** `src/features/worker/core/WorkerLifecycle.ts`
+**Problem:** The worker completes the discovery/extraction/persistence pipeline but never calls `MatchEngine.executeDeltaBatch()`. The matching step is absent.
+**Fix:** After `executor.executeWave(wave)` completes (step 5 in the lifecycle), instantiate `MatchEngine` and call `executeDeltaBatch(lastRunTime)`, where `lastRunTime` is the session's `started_at` timestamp.
+
+## 6. Next Development Branch
+`phase-13a-matching-fixes`
+
+## 7. Success Criteria for Phase 13a
+- `npx tsc --noEmit` returns zero errors.
+- `MatchEngine` is called from within `WorkerLifecycle.runSession()`.
+- All Phase 13 audit findings are resolved.
+
+## ACCOUNT TRANSITION RECOVERY PROCEDURE
+
+Step 1: Read `PROJECT_BOOTSTRAP.md`
+Step 2: Read `CURRENT_STATE.md` — pay special attention to **Outstanding Bugs**
+Step 3: Read `SESSION_HANDOFF.md` (this file)
+Step 4: Read `TRANSITION_SNAPSHOT.md`
+Step 5: Read `PHASE_13_ARCHITECTURE.md`
+Step 6: Summarize your understanding of all bugs before writing any code.
