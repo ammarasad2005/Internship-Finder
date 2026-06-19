@@ -48,7 +48,7 @@ export class MatchService {
 
     // Transform the Supabase join shape into our typed interface
     return data.map((row) => {
-      const internship = row.internships as {
+      const internships = row.internships as unknown as Array<{
         id: string;
         company_name: string;
         role_title: string;
@@ -56,7 +56,13 @@ export class MatchService {
         description: string | null;
         application_url: string | null;
         tags: string[] | null;
-      };
+      }>;
+      
+      const internship = internships?.[0];
+
+      if (!internship) {
+        throw new Error(`Internship data missing for match ${row.id}`);
+      }
 
       return {
         id: row.id,

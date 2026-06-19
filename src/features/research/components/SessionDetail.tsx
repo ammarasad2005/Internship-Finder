@@ -70,6 +70,29 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
             {session.status}
           </span>
         </div>
+
+        {session.status === 'completed' && (
+          <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <Link
+              href={`/dashboard/sessions/${sessionId}/matches`}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '0.625rem 1.25rem',
+                borderRadius: 'var(--radius-md)',
+                backgroundColor: 'var(--primary)',
+                color: '#ffffff',
+                fontWeight: 600,
+                fontSize: '0.875rem',
+                textDecoration: 'none',
+                transition: 'opacity 0.15s',
+              }}
+            >
+              View Matches &rarr;
+            </Link>
+          </div>
+        )}
       </div>
 
       <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem' }}>Timeline Events</h2>
