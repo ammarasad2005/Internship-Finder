@@ -156,3 +156,11 @@ This document maintains a chronological history of the project's development, tr
   - Mandated a new B-Tree index on `discovered_at` for the `internships` table.
   - Discarded complex SQL location trigram indexes in favor of purely in-memory evaluation.
   - Deferred Match TTL retention policies and PostgreSQL dead-tuple vacuum optimizations to a future scaling sprint to maintain momentum.
+
+## Hotfix: Async Integration & TypeScript Fixes
+- **Goal:** Resolve compilation errors induced by the Phase 12 architecture transition.
+- **Actions:**
+  - Upgraded `ResearchPlanBuilder.buildPlan` to correctly instantiate `SupabaseClient` and `await` the new async `DomainExpansionService` and `QueryGenerationService` methods.
+  - Fixed strict typing for `remote_preference` inside `ProfileReview.tsx` mapping to Supabase's literal types.
+  - Corrected broken relative imports for `WorkerMetrics` across the worker module.
+- **Decisions:** Enforced exact TypeScript literals (`"remote" | "hybrid" | "onsite" | "no_preference"`) for profile state extraction instead of falling back to `any`.
