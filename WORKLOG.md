@@ -179,5 +179,16 @@ This document maintains a chronological history of the project's development, tr
   - Gemini explanation generation is bounded to the top 5 matches per user to prevent infinite scaling loops and token exhaustion.
   - Matching executes as the absolute final step in the worker lifecycle.
 - **Audit Verdict:** PASSED. Build exits with code 0 (`npx tsc --noEmit`). Zero TypeScript compilation errors.
-- **Remaining Debt:** Sequential Gemini calls create a serverless timeout risk above 50 simultaneous users. Needs future background decoupling (Phase 14).
+- **Remaining Debt:** Sequential Gemini calls create a serverless timeout risk above 50 simultaneous users. Needs future background decoupling (Phase 15).
 
+## Phase 14 Planning: Recommendation UI & Match Feedback Loop
+- **Goal:** Determine the highest-value Phase 14 direction and produce complete architecture documentation.
+- **Actions:**
+  - Conducted a comparative analysis of 6 candidate phases: Notifications, Recommendation UI, Background Scheduling, Match Feedback Loop, Analytics, and Admin Tooling.
+  - Determined that Recommendation UI combined with Match Feedback Loop is the highest-priority Phase 14 because the entire Matching Engine backend is invisible to users without it.
+  - Authored `PHASE_14_ARCHITECTURE.md` with: comparative analysis, system overview, data flow, component hierarchy, card state machine, database migrations required, route structure, feature module structure, server action design, full implementation roadmap, and success criteria.
+- **Decisions:**
+  - Background Scheduling (Vercel timeout fix) is deferred to Phase 15 because it is a scaling concern, not a beta-readiness concern. Low user volume during initial beta does not trigger the timeout risk.
+  - Notifications require a feedback loop to exist first — deferred to Phase 16.
+  - No new columns required in the schema. All necessary columns (`semantic_score`, `explanation`, `user_feedback`) already exist in the `matches` table.
+  - Two new B-Tree index migrations are required for performant reads.

@@ -28,8 +28,20 @@ Phase 13 implementation and audit fixes are fully complete. The `MatchEngine` ha
 
 ## 8. Exact Next Prompt to Run
 ```
-Begin Phase 14: GitHub Actions / Cron Job Decoupling.
-Create the necessary workflows and API endpoints to decouple WorkerLifecycle from the Vercel UI thread.
+Begin Phase 14 implementation according to PHASE_14_ARCHITECTURE.md.
+
+Phase 14 is: Recommendation UI + Match Feedback Loop.
+
+Branch: phase-14-recommendation-ui
+
+Steps:
+1. Create migrations for composite index on (session_id, profile_id) and semantic_score DESC.
+2. Create MatchService.getSessionMatches() to fetch matches joined with internships.
+3. Create feedback.action.ts server action.
+4. Build MatchCard, ScoreBar, FeedbackButtons, TagList components in src/features/matching/components/.
+5. Create src/app/dashboard/sessions/[id]/matches/page.tsx.
+6. Update SessionDetail.tsx to link to matches page on completion.
+7. Verify npx tsc --noEmit returns zero errors.
 ```
 
 ## 9. Recommended Model

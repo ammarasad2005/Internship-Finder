@@ -32,5 +32,10 @@
 - **Missing Import Guards:** No `server-only` import guard protecting `MatchEngine` and `MatchRepository` from accidental frontend bundle inclusion.
 
 ## 5. Immediate Next Phase
-**Phase 14: GitHub Actions / Cron Job Decoupling**
-Move the `WorkerLifecycle` execution off the Vercel UI thread entirely to enable true background execution and bypass Vercel timeout constraints.
+**Phase 14: Recommendation UI + Match Feedback Loop**
+
+See `PHASE_14_ARCHITECTURE.md` for full design.
+
+Branch to create: `phase-14-recommendation-ui`
+
+The Phase 13 Matching Engine is now fully operational but invisible to end-users. Phase 14 exposes this engine's output through a dedicated matches UI and implements the `user_feedback` collection flow (`applied`, `saved`, `rejected`).

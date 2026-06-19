@@ -46,11 +46,14 @@ d8fbd99 (phase-12-ai-research-brain) docs: update continuity after phase 12
 7. **Matching:** `MatchEngine.executeDeltaBatch()` executes at the tail end of the worker loop. It performs an Internship-Centric Delta Batch evaluation inside Node.js memory, generating Semantic score boosts via Gemini for the top 5 matches per user before committing to Supabase.
 
 ## 6. Remaining Roadmap
-- **Phase 14:** GitHub Actions / Cron Job decoupling (Moving `WorkerLifecycle` off the Vercel UI thread).
-- **Phase 15:** Polish and UI completion.
+- **Phase 14:** Recommendation UI + Match Feedback Loop (expose matches to users, allow saved/applied/rejected feedback).
+- **Phase 15:** Background Scheduling / Cron Job Decoupling (move WorkerLifecycle off Vercel UI thread).
+- **Phase 16:** Notifications (alert users when new matches arrive via Supabase Edge Functions).
+- **Phase 17:** UI Polish & Glassmorphism.
 
 ## 7. Immediate Next Phase
-**Phase 14: GitHub Actions / Cron Job Decoupling**
+**Phase 14: Recommendation UI + Match Feedback Loop**
+See: `PHASE_14_ARCHITECTURE.md`
 
 ## 8. Known Technical Debt
 - **Sequential Gemini Scaling Bottleneck:** Explanation generation will exceed Vercel 5-minute timeouts if active users exceed ~50.
