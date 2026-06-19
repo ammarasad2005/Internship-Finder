@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { SupabaseClient } from '@supabase/supabase-js';
 import { Database } from '@/lib/supabase/types';
 import { ActiveProfileData, InternshipData, MatchResult } from '../types';
 import { MatchScorer } from './MatchScorer';
@@ -6,11 +6,13 @@ import { MatchExplanationService } from './MatchExplanationService';
 import { MatchRepository } from './MatchRepository';
 
 export class MatchEngine {
-  private supabase = createClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
-  private repository = new MatchRepository();
+  private supabase: SupabaseClient<Database>;
+  private repository: MatchRepository;
+
+  constructor(supabase: SupabaseClient<Database>, repository: MatchRepository) {
+    this.supabase = supabase;
+    this.repository = repository;
+  }
 
   /**
    * Main entry point for the Internship-Centric Delta Batch matching cycle.

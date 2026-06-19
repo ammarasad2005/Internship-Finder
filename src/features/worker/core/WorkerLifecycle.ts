@@ -3,6 +3,10 @@ import { ResearchPlanBuilder } from '@/features/brain/services/research-plan.ser
 import { SearchWavePlanner } from '@/features/discovery/services/search-wave.planner';
 import { CostTracker } from './CostTracker';
 import { ResearchExecutor } from './ResearchExecutor';
+import { MatchEngine } from '@/features/matching/services/MatchEngine';
+import { MatchRepository } from '@/features/matching/services/MatchRepository';
+import { createClient } from '@supabase/supabase-js';
+import { Database } from '@/lib/supabase/types';
 
 /**
  * WorkerLifecycle manages the global state of the worker.
@@ -45,6 +49,21 @@ export class WorkerLifecycle {
 
       // 6. Cleanup and Complete
       await costTracker.flushToDatabase();
+
+      // 7. Phase 13 Matching Pipeline
+      await SessionService.publishEvent(sessionId, 'matching_started', 'Evaluating discovered internships against your profile...');
+      
+      const supabase = createClient<Database>(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+      );
+      const repository = new MatchRepository(supabase);
+      const matchEngine = new MatchEngine(supabase, repository);
+      
+      // We look back 24 hours to find newly discovered internships
+      const lastRunTime = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+      await matchEngine.executeDeltaBatch(lastRunTime);
+
       await SessionService.publishEvent(sessionId, 'matching_completed', `AI Matching finalized. Saved ${metrics.resultsFound} potential matches.`);
       await SessionService.updateSessionStatus(sessionId, 'completed');
 

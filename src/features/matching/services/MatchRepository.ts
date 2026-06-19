@@ -1,12 +1,13 @@
-import { createClient } from '@supabase/supabase-js';
+import { SupabaseClient } from '@supabase/supabase-js';
 import { Database } from '@/lib/supabase/types';
 import { MatchResult } from '../types';
 
 export class MatchRepository {
-  private supabase = createClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY! // Use service key for background worker
-  );
+  private supabase: SupabaseClient<Database>;
+
+  constructor(supabase: SupabaseClient<Database>) {
+    this.supabase = supabase;
+  }
 
   /**
    * Persists a batch of MatchResults.

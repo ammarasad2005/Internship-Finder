@@ -46,7 +46,7 @@ export class GeminiService {
           }
         });
 
-        const text = response.text();
+        const text = response.text;
         if (!text) throw new Error('Empty response from Gemini');
 
         const parsedJson = JSON.parse(text);
