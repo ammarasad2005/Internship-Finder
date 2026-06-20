@@ -20,7 +20,7 @@ This document is the ultimate continuity guide designed to perfectly restore pro
 - **Phase 14:** Recommendation UI & Match Feedback Loop (Server Page `/dashboard/sessions/[id]/matches`, Server Actions, interactive components, performance indexes).
 - **Phase 15:** Background Scheduling & Worker Decoupling (decoupling WorkerLifecycle off Vercel UI thread to GitHub Actions using Repository Dispatches, standalone CLI script via tsx runner, and server-only compile-time guards).
 - **Phase 16:** Notifications & User Re-engagement (designed and implemented event-driven database webhooks, SMTP transaction email templates via Nodemailer/Gmail, schema setting updates, webhook security checks, and strict idempotency logic to prevent duplicate sends).
-- **Phase 17 Planning:** Feedback Learning Loop (evaluated priorities and architected a dynamic match scoring and query injection loop based on historical user feedback).
+- **Phase 17:** Feedback Learning Loop (dynamically integrated user historical saves/rejections into `MatchScorer` point heuristics and injected personalized constraints directly into Gemini `QueryGenerationService` LLM prompts, completely transforming the application into a personalized recommendation engine).
 
 
 ## 2. Current Architecture
@@ -30,13 +30,13 @@ This document is the ultimate continuity guide designed to perfectly restore pro
 - **Data Flow:** UI `StartSession` -> `SearchWavePlanner` -> `ProviderRouter` -> `GoogleCSEProvider` -> Normalized `SearchResult[]` -> Extraction -> Canonicalization -> Persistence -> MatchEngine -> Student UI (Matches Page + Feedback Loop).
 
 ## 3. Current Branch
-`phase-16-planning` (until merged)
+`phase-17-feedback-learning` (until merged)
 
 ## 4. Most Recent Commits
 ```text
-4f56afc (HEAD -> phase-16-planning) feat: implement phase 16 notifications system
-e0112f9 feat: implement phase 15 worker decoupling
-ed1b0c0 docs: update continuity after phase 14 completion
+eba1d70 (HEAD -> phase-17-feedback-learning) feat: implement phase 17 feedback learning loop
+287de3c docs: plan phase 17 feedback learning loop
+6436eb0 docs: update continuity after phase 16 completion
 ```
 
 ## 5. Current Execution Flow
@@ -53,12 +53,14 @@ ed1b0c0 docs: update continuity after phase 14 completion
 
 9. **Notifications:** Supabase triggers a database webhook upon `search_sessions` completion. The Next.js `/api/webhooks/session-completed` route verifies idempotency and dispatches a compiled Nodemailer HTML digest to the user's Gmail if matching profiles pass the `notification_threshold`.
 
+10. **Feedback Loop:** `FeedbackProfileBuilder` runs locally within the background worker, compiling a user's previous saved/rejected matches to natively adjust both the heuristic scoring and the exact AI search targets.
+
 ## 6. Remaining Roadmap
-- **Phase 17 Implementation:** Feedback Learning Loop (injecting historical user saves/rejections into `MatchScorer` and `QueryGenerationService`).
-- **Phase 18:** UI Polish & Glassmorphism.
+- **Phase 18 Implementation:** UI Polish & Glassmorphism.
+- **Phase 19:** TBD.
 
 ## 7. Immediate Next Phase
-**Phase 17: Feedback Learning Loop (Implementation)**
+**Phase 18: UI Polish & Glassmorphism**
 See: `NEXT_PHASE.md`
 
 ## 8. Known Technical Debt

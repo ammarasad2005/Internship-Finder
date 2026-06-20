@@ -86,6 +86,8 @@ Features are developed on isolated branches (e.g., `phase-13a-matching-fixes`) r
 - **`database-design.md`:** The absolute source of truth for the DB schema.
 
 ## 17. Known Technical Debt
+- **Duplicate Feedback Profile Reads:** `FeedbackProfile` is fetched twice for the triggering user.
+- **N+1 Feedback Aggregation:** Pulling historical feedback sequentially for active users causes N+1 queries. Needs `IN` clause refactoring before scaling to 5,000+ users.
 - **Sequential Gemini Scaling Bottleneck:** Explanation generation is executed sequentially. While moving execution to GitHub Actions eliminates Next.js/Vercel timeout limits, it still consumes excessive GHA runner minutes. Needs parallelization/batching.
 - Unbounded exponential growth in the `matches` table.
 - PostgreSQL dead-tuple bloating from upserts.
@@ -94,5 +96,5 @@ Features are developed on isolated branches (e.g., `phase-13a-matching-fixes`) r
 - `internships.tags` array is destructively overwritten during persistence.
 
 ## 18. Current Project Maturity Assessment
-**High Maturity — Build is Clean.** The infrastructure (Phases 1–15) is complete and production-ready. The background worker crawls and scores matches offline in GitHub Actions, triggered dynamically by Next.js API requests. Zero TypeScript compilation errors exist. The next immediate requirement is implementing user alerts and notification dispatches (Phase 16).
+**High Maturity — Backend Core is Complete.** The infrastructure (Phases 1–17) is complete and production-ready. The system acts as a fully closed-loop personalized recommendation engine, successfully scraping, extracting, matching, dispatching notifications, and updating its own heuristics based on user feedback. Zero TypeScript compilation errors exist. The next immediate requirement is overhauling the basic UI with a Glassmorphism design system (Phase 18).
 

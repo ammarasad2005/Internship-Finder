@@ -1,22 +1,23 @@
 # Next Phase: Handoff Guide
 
 ## 1. Current Branch
-`phase-17-planning` (until merged)
+`phase-17-feedback-learning` (until merged)
 
 ## 2. Next Required Branch
-`phase-17-feedback-loop`
+`phase-18-ui-polish`
 
 ## 3. Last Completed Phase
-Phase 16: Notifications & User Re-engagement — **COMPLETE**.
-Phase 17 Planning: Feedback Learning Loop — **COMPLETE**.
+Phase 17: Feedback Learning Loop — **COMPLETE**.
 
 ## 4. Current Project Status
-Phase 16 (Notifications & Re-engagement via Webhooks/Nodemailer) is fully implemented and audited. Phase 17 Planning is complete. `PHASE_17_ARCHITECTURE.md` has been authored detailing the transition to a dynamic, self-improving recommendation engine using historical user feedback.
+Phase 17 (Feedback Learning Loop) is fully implemented and audited. The system now dynamically incorporates historical user feedback (saves/rejections) into match scoring constraints and Gemini personalized search intents via `FeedbackProfileBuilder`.
 
 ## 5. Outstanding Bugs (Must Fix Before Any Other Work)
 *None.*
 
 ## 6. Technical Debt
+- **Duplicate Feedback Profile Reads:** `FeedbackProfile` is fetched twice for the triggering user (once in `WorkerLifecycle` and once in `MatchEngine`).
+- **N+1 Feedback Aggregation:** `MatchEngine.fetchActiveProfiles()` pulls feedback loops sequentially. This is safe for 50 users but creates N+1 latency at scale. Needs an `IN` clause refactor.
 - **Sequential Gemini Scaling Bottleneck:** Explanation generation is executed sequentially. While moving execution to GitHub Actions eliminates Next.js/Vercel timeout limits, it still consumes excessive GHA runner minutes. Needs parallelization/batching.
 - **Matches TTL Cleanup:** The `matches` table will grow infinitely. Needs a 30-day TTL job.
 - **Tags Overwrite:** `internships.tags` array is destructively overwritten during persistence.
@@ -24,20 +25,19 @@ Phase 16 (Notifications & Re-engagement via Webhooks/Nodemailer) is fully implem
 - **Types Drift:** `types.ts` must be manually kept in sync with the schema.
 
 ## 7. Immediate Next Objective
-**Phase 17: Feedback Learning Loop (Implementation)**
+**Phase 18: UI Polish & Glassmorphism**
 
-Implement the `FeedbackProfileBuilder` to aggregate historical user feedback. Inject these insights dynamically into the `MatchScorer` and `QueryGenerationService` to create a self-improving recommendation loop.
+Replace static, basic CSS layouts with modern, premium web design. Implement Glassmorphism styling (backdrop-filters, dynamic colors) without using TailwindCSS. Apply micro-interactions and smooth layout transitions to the matches dashboard to ensure the aesthetic feels premium and wows the user.
 
 ## 8. Exact Next Prompt to Run
 ```
-/goal Begin Phase 17 implementation according to PHASE_17_ARCHITECTURE.md.
+/goal Begin Phase 18 implementation for UI Polish & Glassmorphism.
 
 Steps:
-1. Create `src/features/brain/services/FeedbackProfileBuilder.ts` to aggregate user feedback from the `matches` and `internships` tables.
-2. Update `src/features/matching/services/MatchScorer.ts` to accept the `FeedbackProfile` and dynamically adjust scores based on positive/negative overlaps.
-3. Update `src/features/brain/services/QueryGenerationService.ts` to accept the `FeedbackProfile` and inject preferences into the Gemini prompt.
-4. Wire everything together inside `src/features/worker/WorkerLifecycle.ts`.
-5. Run `npx tsc --noEmit` and audit the changes.
+1. Conduct an aesthetic review of the current CSS modules across onboarding, dashboard, and match cards.
+2. Implement a unified Glassmorphism design system using raw CSS (no Tailwind).
+3. Add smooth micro-interactions (hover states, focus rings, loading skeletons).
+4. Do not modify the underlying application logic or components' core structures.
 ```
 
 ## 9. Recommended Model

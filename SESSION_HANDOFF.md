@@ -21,19 +21,19 @@ Before you write *any* code or make an architectural decision, you MUST read the
 5. `CURRENT_STATE.md` (Where the project is right now — including all known bugs)
 
 ## 4. Current Status
-Phase 16 (Notifications & User Re-engagement) is fully implemented and verified. Phase 17 Planning is complete, and `PHASE_17_ARCHITECTURE.md` has been authored to design the Feedback Learning Loop. The codebase is fully typesafe and `npx tsc --noEmit` exits with 0 errors.
+Phase 17 (Feedback Learning Loop) is fully implemented and verified. The `FeedbackProfileBuilder` dynamically injects user signals into `MatchScorer` and Gemini `QueryGenerationService`. A thorough audit was passed. The codebase is fully typesafe and `npx tsc --noEmit` exits with 0 errors.
 
 ## 5. Outstanding Bugs — Fix These First
 *There are no compilation or runtime blockers at this time.*
 
 ## 6. Next Development Branch
-`phase-17-planning` remains active until merged, after which we will branch to `phase-17-feedback-loop` for Phase 17 implementation.
+`phase-17-feedback-learning` remains active until merged, after which we will branch to `phase-18-ui-polish` for Phase 18 UI refactoring.
 
-## 7. Success Criteria for Phase 17 (Feedback Learning Loop)
-- Implement `FeedbackProfileBuilder` to aggregate historical `user_feedback` from the `matches` table.
-- Update `MatchScorer` to dynamically adjust points (+15 for positive overlap, -30 for negative overlap) without any database migrations.
-- Update `QueryGenerationService` to inject the `FeedbackProfile` into Gemini search prompts to discover tailored roles.
-- Run `npx tsc --noEmit` cleanly and verify worker execution.
+## 7. Success Criteria for Phase 18 (UI Polish & Glassmorphism)
+- Replace static, basic CSS layouts with modern, premium web design.
+- Implement Glassmorphism styling (backdrop-filters, dynamic colors) without using TailwindCSS.
+- Apply micro-interactions and smooth layout transitions to the matches dashboard.
+- Ensure the aesthetic feels premium and wows the user on first glance.
 
 
 ## ACCOUNT TRANSITION RECOVERY PROCEDURE

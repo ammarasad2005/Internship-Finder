@@ -1,15 +1,15 @@
 # Transition Snapshot
 
 **Date:** June 20, 2026
-**Current Active Branch:** `phase-17-planning`
-**Next Required Branch:** `phase-17-feedback-loop`
+**Current Active Branch:** `phase-17-feedback-learning`
+**Next Required Branch:** `phase-18-ui-polish`
 
 This is a point-in-time architectural snapshot created explicitly to preserve context during an AI account transition.
 
 ## 1. Last Completed Work
-- **Last Completed Phase:** Phase 16 (Notifications) & Phase 17 Planning.
-- **Phase 17 Planning Status:** COMPLETE. `PHASE_17_ARCHITECTURE.md` Authored.
-- **Last Committed Purpose:** Evaluated remaining architectural priorities and determined that a "Feedback Learning Loop" represents the highest leverage user value for the next phase. Designed the system to dynamically inject historical user feedback into match scoring and query generation.
+- **Last Completed Phase:** Phase 17 (Feedback Learning Loop).
+- **Phase 17 Status:** COMPLETE. `PHASE_17_AUDIT.md` Authored and Passed.
+- **Last Committed Purpose:** Implemented dynamic match scoring and query generation that automatically learns from user `saved`/`rejected` actions to boost or penalize recommended roles deterministically.
 
 ## 2. Current Repository Health
 - **Build Status:** ✅ CLEAN — `npx tsc --noEmit` exits with code 0.
@@ -22,6 +22,8 @@ This is a point-in-time architectural snapshot created explicitly to preserve co
 *None.*
 
 ### Deferred Technical Debt
+- **Duplicate Feedback Reads:** `FeedbackProfile` is fetched twice for the triggering user.
+- **N+1 Feedback Aggregation:** Pulling historical feedback sequentially for active users causes N+1 queries. Needs `IN` clause refactoring before scaling to 5,000+ users.
 - **Sequential Gemini Scaling Bottleneck:** Generating match explanations sequentially still consumes GHA runner minutes. Needs future parallelization.
 - **matches TTL Cleanup:** The `matches` table has no 30-day Time-To-Live (TTL) deletion job.
 - **CSS Modules:** UI styling is base layout CSS Modules and needs polish.
@@ -50,7 +52,7 @@ This is a point-in-time architectural snapshot created explicitly to preserve co
 - `QueryRankingService` (Currently returns priority score 0 for everything).
 
 ### What Still Requires Implementation
-- **Phase 17:** Feedback Learning Loop (dynamically adjust scores based on user feedback).
+- **Phase 18:** UI/UX Polish & Glassmorphism Design System.
 
 ---
 
@@ -60,10 +62,10 @@ This is a point-in-time architectural snapshot created explicitly to preserve co
 
 **Step 1:** Read `SESSION_HANDOFF.md` for precise state context.
 
-**Step 2:** Merge `phase-17-planning` into the main branch.
+**Step 2:** Merge `phase-17-feedback-learning` into the main branch.
 
-**Step 3:** Checkout or create branch `phase-17-feedback-loop`.
+**Step 3:** Checkout or create branch `phase-18-ui-polish`.
 
-**Step 4:** Begin implementing `FeedbackProfileBuilder` and integrating it into `MatchScorer` and `QueryGenerationService` as outlined in `PHASE_17_ARCHITECTURE.md`.
+**Step 4:** Begin an aesthetic review and execute a full Glassmorphism redesign across the entire Next.js UI using native CSS Modules.
 
 

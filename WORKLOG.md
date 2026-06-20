@@ -273,3 +273,15 @@ This document maintains a chronological history of the project's development, tr
 - **Decisions:**
   - Maintained the Deterministic First philosophy by implementing pure code-based statistical adjustments in `MatchScorer.ts` before passing generalized keywords to Gemini.
   - Decided to execute the `FeedbackProfileBuilder` safely within the background `WorkerLifecycle`, ensuring zero UI lag.
+
+## Phase 17 Implementation: Feedback Learning Loop
+- **Goal:** Implement the architecture detailed in `PHASE_17_ARCHITECTURE.md` to transform static recommendation matches into a dynamic learning loop.
+- **Actions:**
+  - Created `FeedbackProfileBuilder` to aggregate historical user feedback (saves/applications vs rejections) into positive and negative companies and keywords.
+  - Wired `FeedbackProfileBuilder` into `WorkerLifecycle.runSession` and `MatchEngine.executeDeltaBatch`.
+  - Updated `MatchScorer` with dynamic point adjustments (up to +15 for positive company overlaps, -50 for negative company overlaps, and +10 for tags), bounded between -50 and +20 to prevent runaway echo chambers.
+  - Updated `QueryGenerationService` to inject the historical `FeedbackProfile` directly into Gemini prompts to generate personalized Dorks and search intents.
+- **Audit Verdict:** PASSED (SAFE TO MERGE). Zero compile errors. Strict tenant isolation maintained via `profile_id`.
+- **Identified Technical Debt:**
+  - *Duplicate Reads:* `FeedbackProfile` is fetched twice for the triggering user (once in `WorkerLifecycle` and once in `MatchEngine`).
+  - *N+1 Aggregation:* `MatchEngine.fetchActiveProfiles()` pulls feedback loops sequentially. Extremely safe for 50 users, but poses N+1 latency risks at 5,000+ users. Needs an `IN` clause refactor.
