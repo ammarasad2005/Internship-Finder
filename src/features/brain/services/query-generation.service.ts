@@ -3,6 +3,7 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { GeminiService } from './gemini.service';
 import { AiCacheService } from './ai-cache.service';
 import { QueryGenerationResponseSchema } from '../schemas/gemini.schema';
+import { FeedbackProfile } from './FeedbackProfileBuilder';
 
 export class QueryGenerationService {
   /**
@@ -13,7 +14,8 @@ export class QueryGenerationService {
     expansions: ExpandedDomain[], 
     locationPref: string | null,
     remotePref: string | null,
-    supabase: SupabaseClient
+    supabase: SupabaseClient,
+    feedbackProfile?: FeedbackProfile
   ): Promise<SearchQuery[]> {
     const aiCache = new AiCacheService(supabase);
     const gemini = GeminiService.getInstance();
@@ -27,10 +29,20 @@ export class QueryGenerationService {
 
     // 2. Execute Gemini
     try {
+      let feedbackPrompt = '';
+      if (feedbackProfile) {
+        feedbackPrompt = `\nUser Feedback History: 
+        The user has previously liked roles at these companies: ${Array.from(feedbackProfile.positiveCompanies).join(', ')}
+        The user has previously liked roles with these tags: ${Array.from(feedbackProfile.positiveTags).join(', ')}
+        The user has previously rejected roles at these companies: ${Array.from(feedbackProfile.negativeCompanies).join(', ')}
+        The user has previously rejected roles containing these keywords: ${Array.from(feedbackProfile.negativeKeywords).join(', ')}
+        Adjust your queries to strongly target the user's positive history and avoid the negative history.`;
+      }
+
       const response = await gemini.executeStructuredPrompt(
         `You are an expert technical recruiter generating Google Dorks and ATS search strings.
          Generate high quality, distinct, and highly targeted search queries for the provided domains.
-         Categories must be one of: skill_based, role_based, technology_based, location_based, company_based.
+         Categories must be one of: skill_based, role_based, technology_based, location_based, company_based.${feedbackPrompt}
          Output valid JSON strictly matching the requested schema.`,
         `Domains: ${JSON.stringify(expansions)}\nLocation: ${locationPref}\nRemote: ${remotePref}`,
         QueryGenerationResponseSchema

@@ -4,12 +4,18 @@ import { QueryGenerationService } from './query-generation.service';
 import { QueryRankingService } from './query-ranking.service';
 import { ResearchPlan } from '../types';
 import { createClient } from '@/lib/supabase/client';
+import { FeedbackProfile } from './FeedbackProfileBuilder';
 
 export class ResearchPlanBuilder {
   /**
    * Orchestrates the Brain architecture to output an execution plan.
    */
-  static async buildPlan(profileId: string, sessionId: string, supabaseClient?: any): Promise<ResearchPlan> {
+  static async buildPlan(
+    profileId: string, 
+    sessionId: string, 
+    supabaseClient?: any,
+    feedbackProfile?: FeedbackProfile
+  ): Promise<ResearchPlan> {
     const supabase = supabaseClient || createClient();
 
     // 1. Profile Analysis
@@ -27,7 +33,8 @@ export class ResearchPlanBuilder {
       expandedDomains, 
       profileData.profile.location_preference,
       profileData.profile.remote_preference,
-      supabase
+      supabase,
+      feedbackProfile
     );
 
     // 4. Query Ranking

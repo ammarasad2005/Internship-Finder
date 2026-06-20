@@ -5,6 +5,7 @@ import { ActiveProfileData, InternshipData, MatchResult } from '../types';
 import { MatchScorer } from './MatchScorer';
 import { MatchExplanationService } from './MatchExplanationService';
 import { MatchRepository } from './MatchRepository';
+import { FeedbackProfileBuilder } from '@/features/brain/services/FeedbackProfileBuilder';
 
 export class MatchEngine {
   private supabase: SupabaseClient<Database>;
@@ -146,7 +147,8 @@ export class MatchEngine {
           name: pj.project_name,
           description: pj.description,
           technologies: pj.technologies || []
-        })) || []
+        })) || [],
+        feedbackProfile: await FeedbackProfileBuilder.build(this.supabase, session.profile_id)
       });
     }
 

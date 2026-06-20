@@ -1,3 +1,5 @@
+import { FeedbackProfile } from '@/features/brain/services/FeedbackProfileBuilder';
+
 export interface MatchScore {
   total_score: number;
   location_score: number;    // max 20
@@ -38,4 +40,5 @@ export interface ActiveProfileData {
   remote_preference: 'remote' | 'hybrid' | 'onsite' | 'no_preference' | null;
   skills: string[];
   projects: { name: string; description: string | null; technologies: string[] | null }[];
+  feedbackProfile?: FeedbackProfile;
 }

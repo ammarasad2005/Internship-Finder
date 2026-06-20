@@ -8,6 +8,7 @@ import { MatchEngine } from '@/features/matching/services/MatchEngine';
 import { MatchRepository } from '@/features/matching/services/MatchRepository';
 import { createClient } from '@supabase/supabase-js';
 import { Database } from '@/lib/supabase/types';
+import { FeedbackProfileBuilder } from '@/features/brain/services/FeedbackProfileBuilder';
 
 /**
  * WorkerLifecycle manages the global state of the worker.
@@ -41,7 +42,8 @@ export class WorkerLifecycle {
 
       // 3. Build the Brain Plan
       await SessionService.publishEvent(sessionId, 'planning_started', 'Brain is analyzing profile and generating query intents...', null, supabase);
-      const plan = await ResearchPlanBuilder.buildPlan(profileId, sessionId, supabase);
+      const feedbackProfile = await FeedbackProfileBuilder.build(supabase, profileId);
+      const plan = await ResearchPlanBuilder.buildPlan(profileId, sessionId, supabase, feedbackProfile);
       await SessionService.publishEvent(sessionId, 'planning_completed', `Brain generated ${plan.queries.length} specific search queries.`, null, supabase);
 
       // 4. Discovery Strategy: Build the Execution Wave

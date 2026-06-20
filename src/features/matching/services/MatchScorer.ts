@@ -10,8 +10,13 @@ export class MatchScorer {
     const tags_score = this.scoreTagsAndSkills(profile, internship);
     const title_score = this.scoreTitleRelevance(profile, internship);
     const project_score = this.scoreProjectRelevance(profile, internship);
+    
+    let feedback_adjustment = 0;
+    if (profile.feedbackProfile) {
+      feedback_adjustment = this.scoreFeedback(profile.feedbackProfile, internship);
+    }
 
-    const total_score = location_score + tags_score + title_score + project_score;
+    const total_score = location_score + tags_score + title_score + project_score + feedback_adjustment;
 
     return {
       total_score,
@@ -21,6 +26,53 @@ export class MatchScorer {
       project_score,
       ai_boost: 0 // To be filled by MatchExplanationService
     };
+  }
+
+  private static scoreFeedback(feedbackProfile: import('@/features/brain/services/FeedbackProfileBuilder').FeedbackProfile, internship: InternshipData): number {
+    let adjustment = 0;
+    const companyName = internship.company_name.toLowerCase().trim();
+    const title = internship.role_title.toLowerCase().trim();
+
+    // Positive Company Boost
+    if (feedbackProfile.positiveCompanies.has(companyName)) {
+      adjustment += 15;
+    }
+
+    // Positive Tag Boost
+    if (internship.tags && internship.tags.length > 0) {
+      let tagOverlap = 0;
+      for (const tag of internship.tags) {
+        if (feedbackProfile.positiveTags.has(tag.toLowerCase().trim())) {
+          tagOverlap++;
+        }
+      }
+      if (tagOverlap > 0) {
+        adjustment += Math.min(tagOverlap * 5, 10);
+      }
+    }
+
+    // Negative Company Penalty
+    if (feedbackProfile.negativeCompanies.has(companyName)) {
+      adjustment -= 50;
+    }
+
+    // Negative Keyword Penalty
+    let negativeKeywordHit = false;
+    for (const kw of feedbackProfile.negativeKeywords) {
+      if (title.includes(kw) || companyName.includes(kw)) {
+        negativeKeywordHit = true;
+        break;
+      }
+    }
+    if (negativeKeywordHit) {
+      adjustment -= 30;
+    }
+
+    // Cap the adjustments to avoid pure echo chamber
+    if (adjustment > 20) adjustment = 20;
+    if (adjustment < -50) adjustment = -50;
+
+    return adjustment;
   }
 
   private static scoreLocationAndRemote(profile: ActiveProfileData, internship: InternshipData): number {
