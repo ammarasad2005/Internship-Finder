@@ -1,10 +1,10 @@
 # Current State: Internship Finder
 
-**Last Updated:** Phase 17 Feedback Learning Loop (PASSED)
+**Last Updated:** Phase 18 Architectural Planning (PASSED)
 
 ## 1. Codebase Status
-- **Current Git Branch:** `phase-17-feedback-learning` (until merged)
-- **Application Status:** Phase 17 Feedback Learning Loop is fully implemented. The system operates as a dynamic recommendation engine by injecting historical user feedback (aggregated via `FeedbackProfileBuilder`) into the deterministic `MatchScorer` and Gemini `QueryGenerationService`. TypeScript compilation passes with 0 errors.
+- **Current Git Branch:** `phase-18-planning` (until merged)
+- **Application Status:** Phase 17 Feedback Learning Loop is fully implemented. Phase 18 Planning (Production Bootstrap & First Real Run) is complete. The system architecture for a live production deployment and end-to-end testing protocol is designed and documented in `PHASE_18_ARCHITECTURE.md`. TypeScript compilation passes with 0 errors.
 
 ## 2. Implemented Systems (Production-Ready)
 - Next.js 15 App Router Architecture with `src/features/` module separation.
@@ -57,9 +57,9 @@
   - `SUPABASE_WEBHOOK_SECRET`: Authorization code verification string for database webhook calls (shared between Next.js and Supabase).
 
 ## 6. Immediate Next Phase
-**Phase 18: UI Polish & Glassmorphism (Frontend Overhaul)**
+**Phase 18: Production Bootstrap & First Real Run**
 
-With the backend intelligence (Worker, Matching, Feedback, Notifications) robustly mature, the immediate next phase is to replace bare CSS Modules with a premium, dynamic, Glassmorphism-inspired design system.
+Before investing heavily in UI Polish, we must validate the 17-phase architecture in a real production environment. This includes configuring Vercel, Supabase, and GitHub Actions, and executing the worker pipeline against live internet sources to verify Google CSE parsing, Gemini API quotas, and SMTP webhooks.
 
 See `NEXT_PHASE.md` for implementation details.
 

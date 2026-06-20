@@ -21,6 +21,7 @@ This document is the ultimate continuity guide designed to perfectly restore pro
 - **Phase 15:** Background Scheduling & Worker Decoupling (decoupling WorkerLifecycle off Vercel UI thread to GitHub Actions using Repository Dispatches, standalone CLI script via tsx runner, and server-only compile-time guards).
 - **Phase 16:** Notifications & User Re-engagement (designed and implemented event-driven database webhooks, SMTP transaction email templates via Nodemailer/Gmail, schema setting updates, webhook security checks, and strict idempotency logic to prevent duplicate sends).
 - **Phase 17:** Feedback Learning Loop (dynamically integrated user historical saves/rejections into `MatchScorer` point heuristics and injected personalized constraints directly into Gemini `QueryGenerationService` LLM prompts, completely transforming the application into a personalized recommendation engine).
+- **Phase 18 Planning:** Production Bootstrap & First Real Run (analyzed priorities and authored `PHASE_18_ARCHITECTURE.md` to dictate the live deployment and end-to-end execution of the pipeline).
 
 
 ## 2. Current Architecture
@@ -30,13 +31,13 @@ This document is the ultimate continuity guide designed to perfectly restore pro
 - **Data Flow:** UI `StartSession` -> `SearchWavePlanner` -> `ProviderRouter` -> `GoogleCSEProvider` -> Normalized `SearchResult[]` -> Extraction -> Canonicalization -> Persistence -> MatchEngine -> Student UI (Matches Page + Feedback Loop).
 
 ## 3. Current Branch
-`phase-17-feedback-learning` (until merged)
+`phase-18-planning` (until merged)
 
 ## 4. Most Recent Commits
 ```text
-eba1d70 (HEAD -> phase-17-feedback-learning) feat: implement phase 17 feedback learning loop
-287de3c docs: plan phase 17 feedback learning loop
-6436eb0 docs: update continuity after phase 16 completion
+(HEAD -> phase-18-planning) docs: plan phase 18 production bootstrap
+468e724 docs: update continuity after phase 17 completion
+eba1d70 feat: implement phase 17 feedback learning loop
 ```
 
 ## 5. Current Execution Flow
@@ -56,11 +57,11 @@ eba1d70 (HEAD -> phase-17-feedback-learning) feat: implement phase 17 feedback l
 10. **Feedback Loop:** `FeedbackProfileBuilder` runs locally within the background worker, compiling a user's previous saved/rejected matches to natively adjust both the heuristic scoring and the exact AI search targets.
 
 ## 6. Remaining Roadmap
-- **Phase 18 Implementation:** UI Polish & Glassmorphism.
-- **Phase 19:** TBD.
+- **Phase 18 Implementation:** Production Bootstrap & First Real Run.
+- **Phase 19:** UI Polish & Glassmorphism.
 
 ## 7. Immediate Next Phase
-**Phase 18: UI Polish & Glassmorphism**
+**Phase 18: Production Bootstrap & First Real Run (Implementation)**
 See: `NEXT_PHASE.md`
 
 ## 8. Known Technical Debt

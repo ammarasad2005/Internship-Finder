@@ -21,19 +21,20 @@ Before you write *any* code or make an architectural decision, you MUST read the
 5. `CURRENT_STATE.md` (Where the project is right now — including all known bugs)
 
 ## 4. Current Status
-Phase 17 (Feedback Learning Loop) is fully implemented and verified. The `FeedbackProfileBuilder` dynamically injects user signals into `MatchScorer` and Gemini `QueryGenerationService`. A thorough audit was passed. The codebase is fully typesafe and `npx tsc --noEmit` exits with 0 errors.
+Phase 17 (Feedback Learning Loop) is fully implemented and verified. Phase 18 Planning is complete, and `PHASE_18_ARCHITECTURE.md` has been authored to design the "Production Bootstrap & First Real Run" protocol. The codebase is fully typesafe and `npx tsc --noEmit` exits with 0 errors.
 
 ## 5. Outstanding Bugs — Fix These First
 *There are no compilation or runtime blockers at this time.*
 
 ## 6. Next Development Branch
-`phase-17-feedback-learning` remains active until merged, after which we will branch to `phase-18-ui-polish` for Phase 18 UI refactoring.
+`phase-18-planning` remains active until merged, after which we will branch to `phase-18-bootstrap` for Phase 18 execution.
 
-## 7. Success Criteria for Phase 18 (UI Polish & Glassmorphism)
-- Replace static, basic CSS layouts with modern, premium web design.
-- Implement Glassmorphism styling (backdrop-filters, dynamic colors) without using TailwindCSS.
-- Apply micro-interactions and smooth layout transitions to the matches dashboard.
-- Ensure the aesthetic feels premium and wows the user on first glance.
+## 7. Success Criteria for Phase 18 (Production Bootstrap & First Real Run)
+- Successfully configure Vercel, Supabase, and GitHub Actions production environments with all required secrets.
+- Trigger a real session from the live UI.
+- Verify GitHub Actions properly executes the `WorkerLifecycle` script.
+- Confirm live internships are scraped, inserted, scored, and returned to the UI.
+- Confirm the `session-completed` webhook successfully triggers a Nodemailer email to a real inbox.
 
 
 ## ACCOUNT TRANSITION RECOVERY PROCEDURE

@@ -1,16 +1,17 @@
 # Next Phase: Handoff Guide
 
 ## 1. Current Branch
-`phase-17-feedback-learning` (until merged)
+`phase-18-planning` (until merged)
 
 ## 2. Next Required Branch
-`phase-18-ui-polish`
+`phase-18-bootstrap`
 
 ## 3. Last Completed Phase
 Phase 17: Feedback Learning Loop — **COMPLETE**.
+Phase 18 Planning: Production Bootstrap — **COMPLETE**.
 
 ## 4. Current Project Status
-Phase 17 (Feedback Learning Loop) is fully implemented and audited. The system now dynamically incorporates historical user feedback (saves/rejections) into match scoring constraints and Gemini personalized search intents via `FeedbackProfileBuilder`.
+Phase 18 Planning is complete. The system architecture for a live production deployment and end-to-end testing protocol is designed and documented in `PHASE_18_ARCHITECTURE.md`. The 17-phase underlying architecture is fully implemented, completely typesafe, and ready for its first real test.
 
 ## 5. Outstanding Bugs (Must Fix Before Any Other Work)
 *None.*
@@ -25,19 +26,23 @@ Phase 17 (Feedback Learning Loop) is fully implemented and audited. The system n
 - **Types Drift:** `types.ts` must be manually kept in sync with the schema.
 
 ## 7. Immediate Next Objective
-**Phase 18: UI Polish & Glassmorphism**
+**Phase 18: Production Bootstrap & First Real Run**
 
-Replace static, basic CSS layouts with modern, premium web design. Implement Glassmorphism styling (backdrop-filters, dynamic colors) without using TailwindCSS. Apply micro-interactions and smooth layout transitions to the matches dashboard to ensure the aesthetic feels premium and wows the user.
+Before investing heavily in UI Polish, we must validate the 17-phase architecture in a real production environment. This includes configuring Vercel, Supabase, and GitHub Actions, and executing the worker pipeline against live internet sources to verify Google CSE parsing, Gemini API quotas, and SMTP webhooks.
 
 ## 8. Exact Next Prompt to Run
 ```
-/goal Begin Phase 18 implementation for UI Polish & Glassmorphism.
+/goal Begin Phase 18 implementation according to PHASE_18_ARCHITECTURE.md.
 
 Steps:
-1. Conduct an aesthetic review of the current CSS modules across onboarding, dashboard, and match cards.
-2. Implement a unified Glassmorphism design system using raw CSS (no Tailwind).
-3. Add smooth micro-interactions (hover states, focus rings, loading skeletons).
-4. Do not modify the underlying application logic or components' core structures.
+1. Configure and deploy the Supabase schema to a live production instance.
+2. Deploy the Next.js app to Vercel and configure necessary environment variables.
+3. Configure the GitHub Actions repository secrets (Gemini, Supabase, Google CSE).
+4. Establish and verify the Supabase Database Webhook to the Vercel endpoint.
+5. Manually trigger the first session from the live UI.
+6. Verify the GitHub Action executes completely without error.
+7. Verify the Nodemailer SMTP email arrives successfully.
+8. Compile a baseline rate limit and duration post-mortem to determine true costs for the 50-user target.
 ```
 
 ## 9. Recommended Model

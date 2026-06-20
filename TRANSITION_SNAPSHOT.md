@@ -1,15 +1,15 @@
 # Transition Snapshot
 
 **Date:** June 20, 2026
-**Current Active Branch:** `phase-17-feedback-learning`
-**Next Required Branch:** `phase-18-ui-polish`
+**Current Active Branch:** `phase-18-planning`
+**Next Required Branch:** `phase-18-bootstrap`
 
 This is a point-in-time architectural snapshot created explicitly to preserve context during an AI account transition.
 
 ## 1. Last Completed Work
-- **Last Completed Phase:** Phase 17 (Feedback Learning Loop).
-- **Phase 17 Status:** COMPLETE. `PHASE_17_AUDIT.md` Authored and Passed.
-- **Last Committed Purpose:** Implemented dynamic match scoring and query generation that automatically learns from user `saved`/`rejected` actions to boost or penalize recommended roles deterministically.
+- **Last Completed Phase:** Phase 17 (Feedback Learning Loop) & Phase 18 Planning.
+- **Phase 18 Planning Status:** COMPLETE. `PHASE_18_ARCHITECTURE.md` Authored.
+- **Last Committed Purpose:** Evaluated candidates and determined that a "Production Bootstrap & First Real Run" represents the highest leverage user value for Phase 18 over aesthetic improvements. Outlined the architecture for end-to-end production deployment.
 
 ## 2. Current Repository Health
 - **Build Status:** ✅ CLEAN — `npx tsc --noEmit` exits with code 0.
@@ -52,7 +52,8 @@ This is a point-in-time architectural snapshot created explicitly to preserve co
 - `QueryRankingService` (Currently returns priority score 0 for everything).
 
 ### What Still Requires Implementation
-- **Phase 18:** UI/UX Polish & Glassmorphism Design System.
+- **Phase 18:** Production Bootstrap & First Real Run.
+- **Phase 19:** UI/UX Polish & Glassmorphism Design System.
 
 ---
 
@@ -62,10 +63,10 @@ This is a point-in-time architectural snapshot created explicitly to preserve co
 
 **Step 1:** Read `SESSION_HANDOFF.md` for precise state context.
 
-**Step 2:** Merge `phase-17-feedback-learning` into the main branch.
+**Step 2:** Merge `phase-18-planning` into the main branch.
 
-**Step 3:** Checkout or create branch `phase-18-ui-polish`.
+**Step 3:** Checkout or create branch `phase-18-bootstrap`.
 
-**Step 4:** Begin an aesthetic review and execute a full Glassmorphism redesign across the entire Next.js UI using native CSS Modules.
+**Step 4:** Begin provisioning the live Supabase database, Vercel frontend, and GitHub Actions repository secrets according to `PHASE_18_ARCHITECTURE.md`. Execute the first live session run.
 
 

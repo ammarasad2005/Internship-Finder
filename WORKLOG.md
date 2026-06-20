@@ -285,3 +285,12 @@ This document maintains a chronological history of the project's development, tr
 - **Identified Technical Debt:**
   - *Duplicate Reads:* `FeedbackProfile` is fetched twice for the triggering user (once in `WorkerLifecycle` and once in `MatchEngine`).
   - *N+1 Aggregation:* `MatchEngine.fetchActiveProfiles()` pulls feedback loops sequentially. Extremely safe for 50 users, but poses N+1 latency risks at 5,000+ users. Needs an `IN` clause refactor.
+
+## Phase 18 Planning: Production Bootstrap & First Real Run
+- **Goal:** Validate the entire 17-phase architecture end-to-end in a live production environment before investing in UI polish.
+- **Actions:**
+  - Evaluated multiple candidates including UI Polish, Analytics, and Notification Enhancements.
+  - Selected "Production Bootstrap & First Real Run" as the highest leverage Phase 18 to flush out real-world rate limits, Google CSE DOM parsing issues, and webhook latency.
+  - Authored `PHASE_18_ARCHITECTURE.md` detailing the environment setup, manual testing protocols, and baseline metrics capture strategy.
+- **Decisions:**
+  - Prioritized operational validation over aesthetic improvements to adhere to the "Deterministic First" and "Real User Value" philosophies.
