@@ -1,10 +1,10 @@
 # Current State: Internship Finder
 
-**Last Updated:** Phase 15 Background Scheduling & Worker Decoupling (PASSED)
+**Last Updated:** Phase 16 Notifications & User Re-engagement Planning (PASSED)
 
 ## 1. Codebase Status
 - **Current Git Branch:** `phase-15-planning` (until merged)
-- **Application Status:** Phase 15 Background Scheduling & Worker Decoupling has been fully implemented, integrated, and audited. The background crawler and matching engine run offline inside GitHub Actions, triggered via HTTP dispatches from the Next.js API layer. The frontend bundle is fully decoupled from server-side dependencies. TypeScript compilation (`npx tsc --noEmit`) passes with 0 errors.
+- **Application Status:** Phase 15 Background Scheduling & Worker Decoupling is fully implemented. Phase 16 Planning (Notifications & User Re-engagement) is complete. The system architecture for email notifications triggered by database completion webhooks is designed and documented in `PHASE_16_ARCHITECTURE.md`. TypeScript compilation passes with 0 errors.
 
 ## 2. Implemented Systems (Production-Ready)
 - Next.js 15 App Router Architecture with `src/features/` module separation.
@@ -43,13 +43,16 @@
   - `GEMINI_API_KEY`: API key for Google Gemini API.
   - `GOOGLE_CSE_API_KEY`: API key for Google Custom Search.
   - `GOOGLE_CSE_ENGINE_ID`: Custom Search Engine ID.
+- **New Required Project Secrets (Phase 16):**
+  - `RESEND_API_KEY`: SMTP/Transactional Email token (stored in Next.js/Vercel server variables).
+  - `SUPABASE_WEBHOOK_SECRET`: Authorization code verification string for database webhook calls (shared between Next.js and Supabase).
 
 ## 6. Immediate Next Phase
-**Phase 16: Notifications**
+**Phase 16: Notifications (Implementation)**
 
-With the worker decoupled onto the server/runner, we can implement asynchronous email/Slack alerts to notify users when new match recommendations have arrived without client interaction.
+With Phase 16 planning complete and the architecture designed in `PHASE_16_ARCHITECTURE.md`, we will implement the email settings UI toggle, Supabase Database Webhook trigger, and Resend delivery handler.
 
-See `NEXT_PHASE.md` for planning.
+See `NEXT_PHASE.md` for implementation details.
 
 
 

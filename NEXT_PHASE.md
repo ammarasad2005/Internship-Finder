@@ -8,9 +8,10 @@
 
 ## 3. Last Completed Phase
 Phase 15: Background Scheduling & Worker Decoupling — **COMPLETE**.
+Phase 16 Planning: Notifications & User Re-engagement — **COMPLETE**.
 
 ## 4. Current Project Status
-Phase 15 (background execution workflow, trigger endpoint, and standalone script runner) has been successfully implemented and verified with zero compilation errors. The matching engine and crawler run asynchronously off-thread in GitHub Actions.
+Phase 15 (decoupled background crawler execution) is fully implemented and audited. Phase 16 Planning is also complete; we have evaluated the roadmap priorities and created `PHASE_16_ARCHITECTURE.md` to support user re-engagement via Database Webhook-triggered summary emails.
 
 ## 5. Outstanding Bugs (Must Fix Before Any Other Work)
 *None.*
@@ -23,22 +24,21 @@ Phase 15 (background execution workflow, trigger endpoint, and standalone script
 - **Types Drift:** `types.ts` must be manually kept in sync with the schema.
 
 ## 7. Immediate Next Objective
-**Phase 16: Notifications**
+**Phase 16: Notifications & User Re-engagement (Implementation)**
 
-Implement asynchronous alerts (e.g., email notification summaries) to notify students when new high-quality internship matches (score > 75) are found for their profile.
+Implement the event-driven notification summaries triggered via Supabase Database Webhooks calling a Next.js API route that delivers transaction emails through Resend.
 
 ## 8. Exact Next Prompt to Run
 ```
-/goal Begin Phase 16 implementation for Notifications.
+/goal Begin Phase 16 implementation according to PHASE_16_ARCHITECTURE.md.
 
 Steps:
-1. Create a Supabase migration to add `email_notifications_enabled BOOLEAN DEFAULT true` to the `profiles` table.
-2. Implement notification settings toggles in the User UI (Onboarding / Settings pages).
-3. Set up notification dispatcher logic to collect new matches generated during a session, filters for high scores (> 75), and prepares email alerts.
-4. Integrate a transaction email client wrapper (e.g., using Resend, Mailgun, or dynamic mock switch) to compile and send styled HTML email notifications.
-5. Ensure emails direct the user to the matches URL: `/dashboard/sessions/[id]/matches`.
-6. Run:
-   npx tsc --noEmit
+1. Create Supabase database migration to add `email_notifications_enabled` (boolean, default true) and `notification_threshold` (integer, default 75) columns to the `profiles` table.
+2. Update the frontend onboarding/settings UI (ProfileReview.tsx) to expose notification preference selectors (toggle and slider) and persist updates to Supabase.
+3. Build the Next.js API webhook endpoint `/api/webhooks/session-completed` which validates authorization headers, checks profile notification toggles, gathers matches >= threshold, and constructs a responsive email template.
+4. Integrate the Resend client SDK to deliver the generated HTML email summaries.
+5. Set up the Supabase database webhook trigger on the `search_sessions` table to call the API endpoint when status becomes 'completed'.
+6. Run `npx tsc --noEmit` to ensure a clean build.
 ```
 
 ## 9. Recommended Model

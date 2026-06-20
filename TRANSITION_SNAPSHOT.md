@@ -1,15 +1,15 @@
 # Transition Snapshot
 
-**Date:** June 19, 2026
+**Date:** June 20, 2026
 **Current Active Branch:** `phase-15-planning`
 **Next Required Branch:** `phase-16-notifications`
 
 This is a point-in-time architectural snapshot created explicitly to preserve context during an AI account transition.
 
 ## 1. Last Completed Work
-- **Last Completed Phase:** Phase 15 (Background Scheduling & Worker Decoupling).
-- **Phase 15 Code Status:** COMPLETE. Audit Passed.
-- **Last Committed Purpose:** Decouple the long-running crawler/matching engine from Next.js onto a GitHub Actions runner, implementing the `/api/sessions/trigger` dispatch endpoint, standalone CLI node runner `src/scripts/run-worker.ts` via tsx, and server-only compile-time guards with path-mapping mocks.
+- **Last Completed Phase:** Phase 15 (Background Scheduling & Worker Decoupling) & Phase 16 Planning (Notifications & User Re-engagement).
+- **Phase 15 & 16 Planning Code Status:** COMPLETE. Audit Passed.
+- **Last Committed Purpose:** Decoupled background execution and completed candidate roadmap research and architectural design for user alert notifications, documented in `PHASE_16_ARCHITECTURE.md`.
 
 ## 2. Current Repository Health
 - **Build Status:** ✅ CLEAN — `npx tsc --noEmit` exits with code 0.

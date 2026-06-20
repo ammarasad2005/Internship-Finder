@@ -238,5 +238,18 @@ This document maintains a chronological history of the project's development, tr
   - Bypassed standard runtime checks of the `server-only` package in standalone CLI execution by mapping the module path to an empty local mock in `tsconfig.json`, preserving Next.js build-time safety checks.
 - **Audit Verdict:** PASSED. Verified zero compilation errors under `npx tsc --noEmit` and successful script execution check. No backend worker/scraping dependencies leak to the frontend client React bundle. RLS is fully respected and service role keys are strictly locked on the server/runner environment.
 
+## Phase 16 Planning: Notifications & User Re-engagement
+- **Goal:** Determine the highest-leverage next phase and produce comprehensive architecture documentation for user alerts.
+- **Actions:**
+  - Evaluated 7 candidate phases: Notifications, Feedback Learning Loop, Analytics Dashboard, Realtime Match Updates, Admin Operations Console, AI Extraction Fallbacks, and Match Quality Improvement.
+  - Formulated a prioritization matrix ranking candidates by user value, engineering effort, cost, deterministic alignment, and beta fit.
+  - Selected Notifications & User Re-engagement as the highest-priority Phase 16 to close the asynchronous background execution loop established in Phase 15.
+  - Authored `PHASE_16_ARCHITECTURE.md` specifying database columns, event-driven trigger flow, webhook authentication, template design, cost analysis, failure modes, and implementation roadmap.
+- **Decisions:**
+  - Standardized on a Supabase Database Webhook trigger on `search_sessions` completion rather than worker-initiated alerts, keeping worker scopes clean.
+  - Standardized on Resend as the SMTP provider utilizing its 3,000 free emails/month tier to maintain zero-cost operations ($0).
+  - Enforced email throttling by sending a single summary digest per session, filtering matches at a customizable threshold (default >= 75) to prevent email spam.
+
+
 
 

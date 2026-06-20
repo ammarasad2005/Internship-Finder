@@ -26,6 +26,8 @@ export interface Database {
           duration_preference: string | null
           paid_preference: boolean | null
           confidence_score: number
+          email_notifications_enabled: boolean
+          notification_threshold: number
           created_at: string
           updated_at: string
         }
@@ -38,6 +40,8 @@ export interface Database {
           duration_preference?: string | null
           paid_preference?: boolean | null
           confidence_score?: number
+          email_notifications_enabled?: boolean
+          notification_threshold?: number
           created_at?: string
           updated_at?: string
         }
@@ -50,6 +54,8 @@ export interface Database {
           duration_preference?: string | null
           paid_preference?: boolean | null
           confidence_score?: number
+          email_notifications_enabled?: boolean
+          notification_threshold?: number
           created_at?: string
           updated_at?: string
         }
@@ -119,6 +125,8 @@ export interface Database {
           status: Database['public']['Enums']['search_session_status']
           started_at: string | null
           completed_at: string | null
+          notification_sent: boolean
+          notification_sent_at: string | null
           created_at: string
         }
         Insert: {
@@ -127,6 +135,8 @@ export interface Database {
           status?: Database['public']['Enums']['search_session_status']
           started_at?: string | null
           completed_at?: string | null
+          notification_sent?: boolean
+          notification_sent_at?: string | null
           created_at?: string
         }
         Update: {
@@ -135,6 +145,8 @@ export interface Database {
           status?: Database['public']['Enums']['search_session_status']
           started_at?: string | null
           completed_at?: string | null
+          notification_sent?: boolean
+          notification_sent_at?: string | null
           created_at?: string
         }
         Relationships: { foreignKeyName: string; columns: string[]; isOneToOne?: boolean; referencedRelation: string; referencedColumns: string[] }[]

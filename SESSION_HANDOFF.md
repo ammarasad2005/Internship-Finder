@@ -21,7 +21,7 @@ Before you write *any* code or make an architectural decision, you MUST read the
 5. `CURRENT_STATE.md` (Where the project is right now — including all known bugs)
 
 ## 4. Current Status
-Phase 15 (Background Scheduling & Worker Decoupling) is fully implemented, verified, and audited with success. The background crawler and matching engine run asynchronously inside GitHub Actions, triggered by the Next.js API endpoint `/api/sessions/trigger`. The codebase is fully typesafe and `npx tsc --noEmit` exits with 0 errors.
+Phase 15 (Background Scheduling & Worker Decoupling) is fully implemented, verified, and audited with success. Phase 16 Planning (Notifications & User Re-engagement) is also complete and documented in `PHASE_16_ARCHITECTURE.md`. The codebase is fully typesafe and `npx tsc --noEmit` exits with 0 errors.
 
 ## 5. Outstanding Bugs — Fix These First
 *There are no compilation or runtime blockers at this time.*

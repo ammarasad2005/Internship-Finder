@@ -19,6 +19,7 @@ This document is the ultimate continuity guide designed to perfectly restore pro
 - **Phase 13:** Matching Engine Architecture, Implementation & Scalability Audit.
 - **Phase 14:** Recommendation UI & Match Feedback Loop (Server Page `/dashboard/sessions/[id]/matches`, Server Actions, interactive components, performance indexes).
 - **Phase 15:** Background Scheduling & Worker Decoupling (decoupling WorkerLifecycle off Vercel UI thread to GitHub Actions using Repository Dispatches, standalone CLI script via tsx runner, and server-only compile-time guards).
+- **Phase 16 Planning:** Notifications & User Re-engagement (designed event-driven database webhooks, transaction email templates via Resend, schema setting updates, webhook security checks, and roadmap in `PHASE_16_ARCHITECTURE.md`).
 
 
 ## 2. Current Architecture
@@ -50,11 +51,11 @@ ed1b0c0 docs: update continuity after phase 14 completion
 9. **Feedback:** Student reviews matches at `/dashboard/sessions/[id]/matches` and provides actions (Save/Apply/Reject) that write back to `matches.user_feedback` via Optimistic UI + Server Actions.
 
 ## 6. Remaining Roadmap
-- **Phase 16:** Notifications (alert users when new matches arrive via Supabase Edge Functions or Database Triggers).
+- **Phase 16 Implementation:** Notifications & User Re-engagement (email setting options, Postgres/Supabase completion triggers, webhook routes, Resend delivery).
 - **Phase 17:** UI Polish & Glassmorphism.
 
 ## 7. Immediate Next Phase
-**Phase 16: Notifications**
+**Phase 16 Implementation: Notifications**
 See: `NEXT_PHASE.md`
 
 ## 8. Known Technical Debt

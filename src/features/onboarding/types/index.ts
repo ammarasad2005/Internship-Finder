@@ -9,6 +9,8 @@ export interface Profile {
   duration_preference?: string;
   paid_preference?: boolean;
   confidence_score: number;
+  email_notifications_enabled?: boolean;
+  notification_threshold?: number;
 }
 
 export interface ProfileSkill {

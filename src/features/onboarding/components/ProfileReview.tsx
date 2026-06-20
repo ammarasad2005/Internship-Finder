@@ -13,6 +13,8 @@ export function ProfileReview({ state }: Props) {
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [emailNotifications, setEmailNotifications] = useState(state.profile.email_notifications_enabled ?? true);
+  const [notificationThreshold, setNotificationThreshold] = useState(state.profile.notification_threshold ?? 75);
 
   const handleFinish = async () => {
     setIsSaving(true);
@@ -31,6 +33,8 @@ export function ProfileReview({ state }: Props) {
         duration_preference: state.profile.duration_preference,
         paid_preference: state.profile.paid_preference,
         confidence_score: state.profile.confidence_score,
+        email_notifications_enabled: emailNotifications,
+        notification_threshold: notificationThreshold,
       };
 
       const skillsData = state.skills.map(s => ({
@@ -75,6 +79,40 @@ export function ProfileReview({ state }: Props) {
           <div className={styles.progressBar} style={{ width: `${state.profile.confidence_score || 0}%` }} />
         </div>
         <div className={styles.confidenceText}>{state.profile.confidence_score || 0}%</div>
+      </div>
+
+      <div style={{ textAlign: 'left', marginBottom: '2rem', padding: '1rem', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '8px' }}>
+        <h3 style={{ marginBottom: '1rem' }}>Notification Preferences</h3>
+        
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+          <label htmlFor="emailNotif" style={{ cursor: 'pointer', fontWeight: 500 }}>Receive Email Matches</label>
+          <input 
+            type="checkbox" 
+            id="emailNotif"
+            checked={emailNotifications} 
+            onChange={(e) => setEmailNotifications(e.target.checked)}
+            style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+          />
+        </div>
+
+        {emailNotifications && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <label htmlFor="threshold" style={{ fontWeight: 500 }}>
+              Match Quality Threshold: {notificationThreshold}%
+            </label>
+            <p style={{ fontSize: '0.85rem', color: '#888', margin: 0 }}>
+              Only send emails for internships matching this score or higher.
+            </p>
+            <input 
+              type="range" 
+              id="threshold"
+              min="50" max="90" step="5"
+              value={notificationThreshold}
+              onChange={(e) => setNotificationThreshold(parseInt(e.target.value))}
+              style={{ width: '100%', cursor: 'pointer', marginTop: '0.5rem' }}
+            />
+          </div>
+        )}
       </div>
 
       {error && <div className={styles.error} style={{marginBottom: '1rem'}}>{error}</div>}
