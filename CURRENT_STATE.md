@@ -1,10 +1,10 @@
 # Current State: Internship Finder
 
-**Last Updated:** Phase 16 Notifications & User Re-engagement Planning (PASSED)
+**Last Updated:** Phase 16 Notifications & User Re-engagement Implementation (PASSED)
 
 ## 1. Codebase Status
-- **Current Git Branch:** `phase-15-planning` (until merged)
-- **Application Status:** Phase 15 Background Scheduling & Worker Decoupling is fully implemented. Phase 16 Planning (Notifications & User Re-engagement) is complete. The system architecture for email notifications triggered by database completion webhooks is designed and documented in `PHASE_16_ARCHITECTURE.md`. TypeScript compilation passes with 0 errors.
+- **Current Git Branch:** `phase-16-planning` (until merged)
+- **Application Status:** Phase 16 Notifications & User Re-engagement is fully implemented. The system utilizes Nodemailer with Gmail SMTP, triggered via a Supabase Database Webhook to send batched recommendation emails asynchronously. Idempotency guarantees prevent duplicate emails. TypeScript compilation passes with 0 errors.
 
 ## 2. Implemented Systems (Production-Ready)
 - Next.js 15 App Router Architecture with `src/features/` module separation.
@@ -21,6 +21,12 @@
   - Dedicated CLI runner script `src/scripts/run-worker.ts` that runs via `npx tsx` and initializes service-role client hooks to bypass RLS.
   - GitHub Actions Workflow `.github/workflows/worker.yml` triggered on dispatch to run matching and crawler tasks asynchronously.
   - Compilation guards (`import 'server-only'`) added to matching and worker core services, resolved via path mapping in `tsconfig.json` to dummy local mock files for standalone node execution.
+- **Phase 16 Notifications & Re-engagement:**
+  - Secure Database Webhook endpoint `/api/webhooks/session-completed` capturing Supabase event triggers.
+  - `NotificationService` dynamically filtering matches by semantic threshold (`notification_threshold`) via service-role DB reads.
+  - Gmail SMTP transport implemented via `nodemailer`.
+  - Notification idempotency state tracking (`notification_sent`, `notification_sent_at`) preventing duplicate email dispatch.
+  - Fully React-styled SSR email templates built with `react-dom/server` (`NotificationEmailTemplate.tsx`).
 
 ## 3. Deferred Systems & Mocks
 - **`QueryRankingService`**: Still mocked, returns priority 0 for all queries.
@@ -44,15 +50,18 @@
   - `GOOGLE_CSE_API_KEY`: API key for Google Custom Search.
   - `GOOGLE_CSE_ENGINE_ID`: Custom Search Engine ID.
 - **New Required Project Secrets (Phase 16):**
-  - `RESEND_API_KEY`: SMTP/Transactional Email token (stored in Next.js/Vercel server variables).
+  - `SMTP_HOST`: Standard SMTP host (e.g. `smtp.gmail.com`).
+  - `SMTP_PORT`: Standard SMTP port (e.g. `465`).
+  - `SMTP_USER`: Standard SMTP email user.
+  - `SMTP_PASS`: Application specific password for SMTP.
   - `SUPABASE_WEBHOOK_SECRET`: Authorization code verification string for database webhook calls (shared between Next.js and Supabase).
 
 ## 6. Immediate Next Phase
-**Phase 16: Notifications (Implementation)**
+**Phase 17: Planning & TBD Strategy**
 
-With Phase 16 planning complete and the architecture designed in `PHASE_16_ARCHITECTURE.md`, we will implement the email settings UI toggle, Supabase Database Webhook trigger, and Resend delivery handler.
+Phase 16 is complete. The next immediate step is to conduct a holistic architectural and strategic review to determine Phase 17 priorities (e.g., Analytics, Refactoring, Admin Operations, or Realtime UI loops).
 
-See `NEXT_PHASE.md` for implementation details.
+See `NEXT_PHASE.md` for planning directives.
 
 
 

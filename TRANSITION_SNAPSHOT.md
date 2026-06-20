@@ -1,15 +1,15 @@
 # Transition Snapshot
 
 **Date:** June 20, 2026
-**Current Active Branch:** `phase-15-planning`
-**Next Required Branch:** `phase-16-notifications`
+**Current Active Branch:** `phase-16-planning`
+**Next Required Branch:** `phase-17-planning`
 
 This is a point-in-time architectural snapshot created explicitly to preserve context during an AI account transition.
 
 ## 1. Last Completed Work
-- **Last Completed Phase:** Phase 15 (Background Scheduling & Worker Decoupling) & Phase 16 Planning (Notifications & User Re-engagement).
-- **Phase 15 & 16 Planning Code Status:** COMPLETE. Audit Passed.
-- **Last Committed Purpose:** Decoupled background execution and completed candidate roadmap research and architectural design for user alert notifications, documented in `PHASE_16_ARCHITECTURE.md`.
+- **Last Completed Phase:** Phase 16 (Notifications & User Re-engagement).
+- **Phase 16 Status:** COMPLETE. Audit Passed.
+- **Last Committed Purpose:** Implemented event-driven notification summaries triggered via Supabase Database Webhooks calling a Next.js API route that delivers transaction emails through Nodemailer via Gmail SMTP. Implemented idempotency mechanisms to guarantee duplicate-free delivery.
 
 ## 2. Current Repository Health
 - **Build Status:** ✅ CLEAN — `npx tsc --noEmit` exits with code 0.
@@ -50,8 +50,7 @@ This is a point-in-time architectural snapshot created explicitly to preserve co
 - `QueryRankingService` (Currently returns priority score 0 for everything).
 
 ### What Still Requires Implementation
-- **Phase 16:** Notification systems (alert users when new matches are generated).
-- **Phase 17:** UI/UX Polish.
+- **Phase 17:** Architectural Planning & TBD Strategy (e.g. Analytics, Realtime UI sync, Admin Ops).
 
 ---
 
@@ -61,10 +60,10 @@ This is a point-in-time architectural snapshot created explicitly to preserve co
 
 **Step 1:** Read `SESSION_HANDOFF.md` for precise state context.
 
-**Step 2:** Merge `phase-15-planning` into the main branch.
+**Step 2:** Merge `phase-16-planning` into the main branch.
 
-**Step 3:** Checkout or create branch `phase-16-notifications`.
+**Step 3:** Checkout or create branch `phase-17-planning`.
 
-**Step 4:** Begin implementing database updates (`email_notifications_enabled`), settings UI toggles, the notification dispatcher, and transaction email client wrapper (Resend/Mailgun).
+**Step 4:** Begin a complete system architectural review to determine the highest leverage priority for Phase 17.
 
 

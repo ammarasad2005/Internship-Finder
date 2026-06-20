@@ -21,20 +21,19 @@ Before you write *any* code or make an architectural decision, you MUST read the
 5. `CURRENT_STATE.md` (Where the project is right now — including all known bugs)
 
 ## 4. Current Status
-Phase 15 (Background Scheduling & Worker Decoupling) is fully implemented, verified, and audited with success. Phase 16 Planning (Notifications & User Re-engagement) is also complete and documented in `PHASE_16_ARCHITECTURE.md`. The codebase is fully typesafe and `npx tsc --noEmit` exits with 0 errors.
+Phase 16 (Notifications & User Re-engagement) is fully implemented, verified, and audited with success. A hotfix for notification idempotency was applied to prevent duplicate emails. The codebase is fully typesafe and `npx tsc --noEmit` exits with 0 errors.
 
 ## 5. Outstanding Bugs — Fix These First
 *There are no compilation or runtime blockers at this time.*
 
 ## 6. Next Development Branch
-`phase-15-planning` remains active until merged, after which we will branch to `phase-16-notifications` for Phase 16 implementation.
+`phase-16-planning` remains active until merged, after which we will branch to `phase-17-planning` for Phase 17 architectural strategy.
 
-## 7. Success Criteria for Phase 16 (Notifications)
-- Create notification preference schema (e.g., `profiles.email_notifications_enabled`).
-- Implement an asynchronous notification trigger (e.g., Supabase Webhooks or Database Triggers) when new matches with high scores (>75) are persisted.
-- Connect an email provider service (e.g., Resend or mock equivalent with switch) to send HTML recommendation summaries.
-- Provide direct link templates in email leading back to `/dashboard/sessions/[id]/matches`.
-- Verify security of notification dispatch pipelines (ensure no data leakage of other users' matches).
+## 7. Success Criteria for Phase 17
+- Conduct a complete system architectural review.
+- Evaluate remaining technical debt against closed-beta requirements.
+- Produce `PHASE_17_ARCHITECTURE.md`.
+- Determine the absolute highest-leverage priority (e.g. Analytics, Realtime UI loops, or Admin tooling).
 
 
 ## ACCOUNT TRANSITION RECOVERY PROCEDURE

@@ -250,6 +250,16 @@ This document maintains a chronological history of the project's development, tr
   - Standardized on Resend as the SMTP provider utilizing its 3,000 free emails/month tier to maintain zero-cost operations ($0).
   - Enforced email throttling by sending a single summary digest per session, filtering matches at a customizable threshold (default >= 75) to prevent email spam.
 
-
-
-
+## Phase 16: Notifications & User Re-engagement (Implementation & Nodemailer Migration)
+- **Goal:** Implement the asynchronous user re-engagement system to dispatch email summaries for successful background search sessions.
+- **Actions:**
+  - Created migration `20260620000000_profile_notification_settings.sql` adding `email_notifications_enabled` and `notification_threshold` to `profiles`.
+  - Created migration `20260620100000_session_notification_idempotency.sql` adding `notification_sent` tracking to `search_sessions` to prevent duplicate emails.
+  - Implemented `NotificationService` that handles database preference queries, Match logic checks, HTML email rendering, and delivery integration.
+  - Created a styled React template (`NotificationEmailTemplate.tsx`) using SSR string rendering (`renderToStaticMarkup`).
+  - Added user configuration toggles to `ProfileReview.tsx` so students can configure their preferences dynamically.
+  - Created the `/api/webhooks/session-completed` secure API endpoint mapped to Supabase database update triggers.
+- **Decisions:**
+  - Pivot from Resend: To ensure true $0 operational cost and resolve production audit limitations, Resend was removed entirely and replaced with `nodemailer` utilizing Gmail SMTP App Password authentication.
+  - Idempotency Gate: Enforced an atomic read/update pattern natively inside `NotificationService` against `search_sessions.notification_sent` to silently block any twin execution triggered by duplicated webhooks.
+- **Audit Verdict:** PASSED. Verified zero compilation errors under `npx tsc --noEmit`. Identified that scaling beyond 500 users per day would require migrating away from standard Gmail SMTP to a transactional provider due to Gmail's daily limits.

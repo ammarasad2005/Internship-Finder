@@ -19,7 +19,8 @@ This document is the ultimate continuity guide designed to perfectly restore pro
 - **Phase 13:** Matching Engine Architecture, Implementation & Scalability Audit.
 - **Phase 14:** Recommendation UI & Match Feedback Loop (Server Page `/dashboard/sessions/[id]/matches`, Server Actions, interactive components, performance indexes).
 - **Phase 15:** Background Scheduling & Worker Decoupling (decoupling WorkerLifecycle off Vercel UI thread to GitHub Actions using Repository Dispatches, standalone CLI script via tsx runner, and server-only compile-time guards).
-- **Phase 16 Planning:** Notifications & User Re-engagement (designed event-driven database webhooks, transaction email templates via Resend, schema setting updates, webhook security checks, and roadmap in `PHASE_16_ARCHITECTURE.md`).
+- **Phase 16:** Notifications & User Re-engagement (designed and implemented event-driven database webhooks, SMTP transaction email templates via Nodemailer/Gmail, schema setting updates, webhook security checks, and strict idempotency logic to prevent duplicate sends).
+- **Phase 17 Planning:** Strategic planning for the next immediate high-value feature set.
 
 
 ## 2. Current Architecture
@@ -29,13 +30,13 @@ This document is the ultimate continuity guide designed to perfectly restore pro
 - **Data Flow:** UI `StartSession` -> `SearchWavePlanner` -> `ProviderRouter` -> `GoogleCSEProvider` -> Normalized `SearchResult[]` -> Extraction -> Canonicalization -> Persistence -> MatchEngine -> Student UI (Matches Page + Feedback Loop).
 
 ## 3. Current Branch
-`phase-15-planning` (until merged)
+`phase-16-planning` (until merged)
 
 ## 4. Most Recent Commits
 ```text
-e0112f9 (HEAD -> phase-15-planning) feat: implement phase 15 worker decoupling
+4f56afc (HEAD -> phase-16-planning) feat: implement phase 16 notifications system
+e0112f9 feat: implement phase 15 worker decoupling
 ed1b0c0 docs: update continuity after phase 14 completion
-3c6670e feat: complete phase 14 recommendation ui
 ```
 
 ## 5. Current Execution Flow
@@ -50,12 +51,13 @@ ed1b0c0 docs: update continuity after phase 14 completion
 8. **Matching:** `MatchEngine.executeDeltaBatch()` executes at the tail end of the worker loop. It performs an Internship-Centric Delta Batch evaluation inside Node.js memory, generating Semantic score boosts via Gemini for the top 5 matches per user before committing to Supabase.
 9. **Feedback:** Student reviews matches at `/dashboard/sessions/[id]/matches` and provides actions (Save/Apply/Reject) that write back to `matches.user_feedback` via Optimistic UI + Server Actions.
 
+9. **Notifications:** Supabase triggers a database webhook upon `search_sessions` completion. The Next.js `/api/webhooks/session-completed` route verifies idempotency and dispatches a compiled Nodemailer HTML digest to the user's Gmail if matching profiles pass the `notification_threshold`.
+
 ## 6. Remaining Roadmap
-- **Phase 16 Implementation:** Notifications & User Re-engagement (email setting options, Postgres/Supabase completion triggers, webhook routes, Resend delivery).
-- **Phase 17:** UI Polish & Glassmorphism.
+- **Phase 17:** Planning & execution of next major architectural objective.
 
 ## 7. Immediate Next Phase
-**Phase 16 Implementation: Notifications**
+**Phase 17: Planning & TBD Strategy**
 See: `NEXT_PHASE.md`
 
 ## 8. Known Technical Debt

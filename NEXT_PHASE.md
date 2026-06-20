@@ -1,17 +1,16 @@
 # Next Phase: Handoff Guide
 
 ## 1. Current Branch
-`phase-15-planning` (until merged)
+`phase-16-planning` (until merged)
 
 ## 2. Next Required Branch
-`phase-16-notifications`
+`phase-17-planning`
 
 ## 3. Last Completed Phase
-Phase 15: Background Scheduling & Worker Decoupling — **COMPLETE**.
-Phase 16 Planning: Notifications & User Re-engagement — **COMPLETE**.
+Phase 16: Notifications & User Re-engagement — **COMPLETE**.
 
 ## 4. Current Project Status
-Phase 15 (decoupled background crawler execution) is fully implemented and audited. Phase 16 Planning is also complete; we have evaluated the roadmap priorities and created `PHASE_16_ARCHITECTURE.md` to support user re-engagement via Database Webhook-triggered summary emails.
+Phase 16 (Notifications & Re-engagement via Webhooks/Nodemailer) is fully implemented and audited. All required migrations and application updates are working and idempotency tests passed.
 
 ## 5. Outstanding Bugs (Must Fix Before Any Other Work)
 *None.*
@@ -24,21 +23,20 @@ Phase 15 (decoupled background crawler execution) is fully implemented and audit
 - **Types Drift:** `types.ts` must be manually kept in sync with the schema.
 
 ## 7. Immediate Next Objective
-**Phase 16: Notifications & User Re-engagement (Implementation)**
+**Phase 17: Architectural Planning & TBD Strategy**
 
-Implement the event-driven notification summaries triggered via Supabase Database Webhooks calling a Next.js API route that delivers transaction emails through Resend.
+Conduct a holistic review of the Internship Finder architecture, roadmap, and outstanding technical debt. Determine the absolute highest-value next feature set or system refactor required to move from closed beta to a scaled alpha state.
 
 ## 8. Exact Next Prompt to Run
 ```
-/goal Begin Phase 16 implementation according to PHASE_16_ARCHITECTURE.md.
+/goal Perform Phase 17 roadmap analysis.
 
-Steps:
-1. Create Supabase database migration to add `email_notifications_enabled` (boolean, default true) and `notification_threshold` (integer, default 75) columns to the `profiles` table.
-2. Update the frontend onboarding/settings UI (ProfileReview.tsx) to expose notification preference selectors (toggle and slider) and persist updates to Supabase.
-3. Build the Next.js API webhook endpoint `/api/webhooks/session-completed` which validates authorization headers, checks profile notification toggles, gathers matches >= threshold, and constructs a responsive email template.
-4. Integrate the Resend client SDK to deliver the generated HTML email summaries.
-5. Set up the Supabase database webhook trigger on the `search_sessions` table to call the API endpoint when status becomes 'completed'.
-6. Run `npx tsc --noEmit` to ensure a clean build.
+Review the entire codebase, continuity documentation, completed phases, architecture documents, and current system maturity.
+Determine the highest-leverage next phase.
+Evaluate candidates such as Analytics Dashboards, Realtime Syncs, Admin Operations Consoles, LLM Abstraction Refactors, etc.
+Recommend exactly ONE next phase.
+Explain why it should be prioritized.
+Create PHASE_17_ARCHITECTURE.md.
 ```
 
 ## 9. Recommended Model
