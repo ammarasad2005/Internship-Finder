@@ -1,10 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { Database } from '@/lib/supabase/types';
 import * as nodemailer from 'nodemailer';
-import { renderToStaticMarkup } from 'react-dom/server';
-import React from 'react';
 import { NotificationEmailTemplate, EmailMatchData } from '../components/NotificationEmailTemplate';
-
 export class NotificationService {
   private supabase = createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -95,9 +92,7 @@ export class NotificationService {
       }));
 
       // 3. Render HTML
-      const htmlContent = renderToStaticMarkup(
-        React.createElement(NotificationEmailTemplate, { matches: emailData })
-      );
+      const htmlContent = NotificationEmailTemplate({ matches: emailData });
 
       // We need the user's email. Since it's not in the `profiles` table (usually it's in Supabase auth.users),
       // we need to fetch it from Supabase Auth admin API.
