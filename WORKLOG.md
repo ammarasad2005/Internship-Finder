@@ -263,3 +263,13 @@ This document maintains a chronological history of the project's development, tr
   - Pivot from Resend: To ensure true $0 operational cost and resolve production audit limitations, Resend was removed entirely and replaced with `nodemailer` utilizing Gmail SMTP App Password authentication.
   - Idempotency Gate: Enforced an atomic read/update pattern natively inside `NotificationService` against `search_sessions.notification_sent` to silently block any twin execution triggered by duplicated webhooks.
 - **Audit Verdict:** PASSED. Verified zero compilation errors under `npx tsc --noEmit`. Identified that scaling beyond 500 users per day would require migrating away from standard Gmail SMTP to a transactional provider due to Gmail's daily limits.
+
+## Phase 17 Planning: Feedback Learning Loop
+- **Goal:** Determine the highest-leverage next phase and produce comprehensive architecture documentation for recommendation improvements.
+- **Actions:**
+  - Evaluated 7 candidate phases including Feedback Learning Loop, Recommendation Quality, Analytics, Realtime Updates, and Admin Operations.
+  - Selected **Feedback Learning Loop** as the absolute highest leverage feature, transforming the system from a static search engine to a personalized recommendation engine with zero extra database migrations.
+  - Authored `PHASE_17_ARCHITECTURE.md` specifying dynamic match scoring adjustments (+15 points for matched companies, -30 for rejected keywords) and upstream query generation injections.
+- **Decisions:**
+  - Maintained the Deterministic First philosophy by implementing pure code-based statistical adjustments in `MatchScorer.ts` before passing generalized keywords to Gemini.
+  - Decided to execute the `FeedbackProfileBuilder` safely within the background `WorkerLifecycle`, ensuring zero UI lag.

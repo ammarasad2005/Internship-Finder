@@ -20,7 +20,7 @@ This document is the ultimate continuity guide designed to perfectly restore pro
 - **Phase 14:** Recommendation UI & Match Feedback Loop (Server Page `/dashboard/sessions/[id]/matches`, Server Actions, interactive components, performance indexes).
 - **Phase 15:** Background Scheduling & Worker Decoupling (decoupling WorkerLifecycle off Vercel UI thread to GitHub Actions using Repository Dispatches, standalone CLI script via tsx runner, and server-only compile-time guards).
 - **Phase 16:** Notifications & User Re-engagement (designed and implemented event-driven database webhooks, SMTP transaction email templates via Nodemailer/Gmail, schema setting updates, webhook security checks, and strict idempotency logic to prevent duplicate sends).
-- **Phase 17 Planning:** Strategic planning for the next immediate high-value feature set.
+- **Phase 17 Planning:** Feedback Learning Loop (evaluated priorities and architected a dynamic match scoring and query injection loop based on historical user feedback).
 
 
 ## 2. Current Architecture
@@ -54,10 +54,11 @@ ed1b0c0 docs: update continuity after phase 14 completion
 9. **Notifications:** Supabase triggers a database webhook upon `search_sessions` completion. The Next.js `/api/webhooks/session-completed` route verifies idempotency and dispatches a compiled Nodemailer HTML digest to the user's Gmail if matching profiles pass the `notification_threshold`.
 
 ## 6. Remaining Roadmap
-- **Phase 17:** Planning & execution of next major architectural objective.
+- **Phase 17 Implementation:** Feedback Learning Loop (injecting historical user saves/rejections into `MatchScorer` and `QueryGenerationService`).
+- **Phase 18:** UI Polish & Glassmorphism.
 
 ## 7. Immediate Next Phase
-**Phase 17: Planning & TBD Strategy**
+**Phase 17: Feedback Learning Loop (Implementation)**
 See: `NEXT_PHASE.md`
 
 ## 8. Known Technical Debt

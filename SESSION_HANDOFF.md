@@ -21,19 +21,19 @@ Before you write *any* code or make an architectural decision, you MUST read the
 5. `CURRENT_STATE.md` (Where the project is right now — including all known bugs)
 
 ## 4. Current Status
-Phase 16 (Notifications & User Re-engagement) is fully implemented, verified, and audited with success. A hotfix for notification idempotency was applied to prevent duplicate emails. The codebase is fully typesafe and `npx tsc --noEmit` exits with 0 errors.
+Phase 16 (Notifications & User Re-engagement) is fully implemented and verified. Phase 17 Planning is complete, and `PHASE_17_ARCHITECTURE.md` has been authored to design the Feedback Learning Loop. The codebase is fully typesafe and `npx tsc --noEmit` exits with 0 errors.
 
 ## 5. Outstanding Bugs — Fix These First
 *There are no compilation or runtime blockers at this time.*
 
 ## 6. Next Development Branch
-`phase-16-planning` remains active until merged, after which we will branch to `phase-17-planning` for Phase 17 architectural strategy.
+`phase-17-planning` remains active until merged, after which we will branch to `phase-17-feedback-loop` for Phase 17 implementation.
 
-## 7. Success Criteria for Phase 17
-- Conduct a complete system architectural review.
-- Evaluate remaining technical debt against closed-beta requirements.
-- Produce `PHASE_17_ARCHITECTURE.md`.
-- Determine the absolute highest-leverage priority (e.g. Analytics, Realtime UI loops, or Admin tooling).
+## 7. Success Criteria for Phase 17 (Feedback Learning Loop)
+- Implement `FeedbackProfileBuilder` to aggregate historical `user_feedback` from the `matches` table.
+- Update `MatchScorer` to dynamically adjust points (+15 for positive overlap, -30 for negative overlap) without any database migrations.
+- Update `QueryGenerationService` to inject the `FeedbackProfile` into Gemini search prompts to discover tailored roles.
+- Run `npx tsc --noEmit` cleanly and verify worker execution.
 
 
 ## ACCOUNT TRANSITION RECOVERY PROCEDURE
