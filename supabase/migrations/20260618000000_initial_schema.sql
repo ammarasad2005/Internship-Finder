@@ -1,6 +1,3 @@
--- Enable necessary extensions
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 -- Define ENUMs
 CREATE TYPE public.search_session_status AS ENUM ('pending', 'running', 'completed', 'failed', 'cancelled');
 CREATE TYPE public.remote_preference_type AS ENUM ('remote', 'hybrid', 'onsite', 'no_preference');
@@ -38,7 +35,7 @@ EXECUTE FUNCTION public.set_current_timestamp_updated_at();
 
 -- 2. profile_skills
 CREATE TABLE public.profile_skills (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     profile_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
     skill_name TEXT NOT NULL,
     source TEXT NOT NULL,
@@ -47,7 +44,7 @@ CREATE TABLE public.profile_skills (
 
 -- 3. profile_projects
 CREATE TABLE public.profile_projects (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     profile_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
     project_name TEXT NOT NULL,
     description TEXT,
@@ -59,7 +56,7 @@ CREATE TABLE public.profile_projects (
 
 -- 4. search_sessions
 CREATE TABLE public.search_sessions (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     profile_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
     status public.search_session_status NOT NULL DEFAULT 'pending',
     started_at TIMESTAMPTZ,
@@ -70,7 +67,7 @@ CREATE TABLE public.search_sessions (
 
 -- 5. research_session_events
 CREATE TABLE public.research_session_events (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     session_id UUID NOT NULL REFERENCES public.search_sessions(id) ON DELETE CASCADE,
     event_type TEXT NOT NULL,
     message TEXT NOT NULL,
@@ -80,7 +77,7 @@ CREATE TABLE public.research_session_events (
 
 -- 6. research_runs
 CREATE TABLE public.research_runs (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     session_id UUID NOT NULL REFERENCES public.search_sessions(id) ON DELETE CASCADE,
     query_used TEXT NOT NULL,
     search_provider TEXT NOT NULL,
@@ -91,7 +88,7 @@ CREATE TABLE public.research_runs (
 
 -- 7. internships
 CREATE TABLE public.internships (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     canonical_key TEXT UNIQUE NOT NULL,
     company_name TEXT NOT NULL,
     role_title TEXT NOT NULL,
@@ -111,7 +108,7 @@ EXECUTE FUNCTION public.set_current_timestamp_updated_at();
 
 -- 8. internship_sources
 CREATE TABLE public.internship_sources (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     internship_id UUID NOT NULL REFERENCES public.internships(id) ON DELETE CASCADE,
     source_url TEXT NOT NULL,
     source_type public.source_type_enum NOT NULL,
@@ -122,7 +119,7 @@ CREATE TABLE public.internship_sources (
 
 -- 9. matches
 CREATE TABLE public.matches (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     profile_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
     internship_id UUID NOT NULL REFERENCES public.internships(id) ON DELETE CASCADE,
     session_id UUID NOT NULL REFERENCES public.search_sessions(id) ON DELETE CASCADE,
@@ -135,7 +132,7 @@ CREATE TABLE public.matches (
 
 -- 10. ai_cache
 CREATE TABLE public.ai_cache (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     cache_key TEXT UNIQUE NOT NULL,
     cache_type public.cache_type_enum NOT NULL,
     output_value JSONB NOT NULL,
@@ -145,7 +142,7 @@ CREATE TABLE public.ai_cache (
 
 -- 11. research_usage_logs
 CREATE TABLE public.research_usage_logs (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     profile_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
     session_id UUID NOT NULL REFERENCES public.search_sessions(id) ON DELETE CASCADE,
     tokens_used INTEGER CHECK (tokens_used >= 0),
