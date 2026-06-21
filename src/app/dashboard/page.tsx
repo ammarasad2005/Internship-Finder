@@ -13,7 +13,7 @@ export default async function DashboardPage() {
     redirect('/auth/login')
   }
 
-  const profileData = await ProfileService.getProfile(user.id)
+  const profileData = await ProfileService.getProfile(user.id, supabase)
 
   if (!profileData || !profileData.profile) {
     redirect('/onboarding')
