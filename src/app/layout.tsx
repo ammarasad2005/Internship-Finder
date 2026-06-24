@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import styles from './layout.module.css'
 import Link from 'next/link'
+import { Analytics } from '@vercel/analytics/next'
 
 export const metadata: Metadata = {
   title: 'Internship Finder',
@@ -30,6 +31,7 @@ export default function RootLayout({
             {children}
           </main>
         </div>
+        <Analytics />
       </body>
     </html>
   )
